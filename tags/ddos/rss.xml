@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DDoS on Zero&#39;s Record</title>
+    <link>https://izeroo.cn/tags/ddos/</link>
+    <description>Recent content in DDoS on Zero&#39;s Record</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 16 Jan 2023 21:02:32 +0800</lastBuildDate><atom:link href="https://izeroo.cn/tags/ddos/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>服务器被DDoS攻击了</title>
+      <link>https://izeroo.cn/post/ddos/</link>
+      <pubDate>Mon, 16 Jan 2023 21:02:32 +0800</pubDate>
+      
+      <guid>https://izeroo.cn/post/ddos/</guid>
+      <description>服务器被ddos攻击了（udp flood），已切换到Github Pages，欢迎继续攻击</description>
+    </item>
+    
+  </channel>
+</rss>

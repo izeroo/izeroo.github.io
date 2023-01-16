@@ -6,14 +6,14 @@
     <description>Recent content on Zero&#39;s Record</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 22 Nov 2022 22:23:00 +0800</lastBuildDate><atom:link href="https://izeroo.cn/rss.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Jan 2023 21:02:32 +0800</lastBuildDate><atom:link href="https://izeroo.cn/rss.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>how2heap posion null byte</title>
-      <link>https://izeroo.cn/post/how2heap-posion-null-byte.html</link>
-      <pubDate>Tue, 22 Nov 2022 22:23:00 +0800</pubDate>
+      <title>服务器被DDoS攻击了</title>
+      <link>https://izeroo.cn/post/ddos/</link>
+      <pubDate>Mon, 16 Jan 2023 21:02:32 +0800</pubDate>
       
-      <guid>https://izeroo.cn/post/how2heap-posion-null-byte.html</guid>
-      <description></description>
+      <guid>https://izeroo.cn/post/ddos/</guid>
+      <description>服务器被ddos攻击了（udp flood），已切换到Github Pages，欢迎继续攻击</description>
     </item>
     
     <item>
@@ -138,15 +138,6 @@
       
       <guid>https://izeroo.cn/post/2021/03/hello-world/</guid>
       <description>欢迎使用WordPress。这是您的第一篇文章。编辑或删除它，然后开始写作吧！</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://izeroo.cn/post/ddos/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://izeroo.cn/post/ddos/</guid>
-      <description>服务器被ddos攻击了（udp flood），已切换到Github Pages，请继续攻击</description>
     </item>
     
     <item>

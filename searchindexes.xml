@@ -2,15 +2,15 @@
 <search>
   
   <entry>
-    <title>how2heap posion null byte</title>
-    <url>/post/how2heap-posion-null-byte.html</url>
-    <categories><category>博客</category>
+    <title>服务器被DDoS攻击了</title>
+    <url>/post/ddos/</url>
+    <categories><category>未分类</category>
     </categories>
     <tags>
-      <tag>PWN</tag>
-      <tag>how2heap</tag>
+      <tag>DDoS</tag>
     </tags>
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[服务器被ddos攻击了（udp flood），已切换到Github Pages，欢迎继续攻击
+]]></content>
   </entry>
   
   <entry>
@@ -284,17 +284,6 @@ index.php?file=php://filter/read=convert.base64-encode/resource=1.php
     <tags>
     </tags>
     <content type="html"><![CDATA[欢迎使用WordPress。这是您的第一篇文章。编辑或删除它，然后开始写作吧！
-]]></content>
-  </entry>
-  
-  <entry>
-    <title></title>
-    <url>/post/ddos/</url>
-    <categories>
-    </categories>
-    <tags>
-    </tags>
-    <content type="html"><![CDATA[服务器被ddos攻击了（udp flood），已切换到Github Pages，请继续攻击
 ]]></content>
   </entry>
   

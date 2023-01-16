@@ -6,7 +6,16 @@
     <description>Recent content in 未分类 on Zero&#39;s Record</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 02 Oct 2021 12:06:24 +0000</lastBuildDate><atom:link href="https://izeroo.cn/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/rss.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 16 Jan 2023 21:02:32 +0800</lastBuildDate><atom:link href="https://izeroo.cn/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>服务器被DDoS攻击了</title>
+      <link>https://izeroo.cn/post/ddos/</link>
+      <pubDate>Mon, 16 Jan 2023 21:02:32 +0800</pubDate>
+      
+      <guid>https://izeroo.cn/post/ddos/</guid>
+      <description>服务器被ddos攻击了（udp flood），已切换到Github Pages，欢迎继续攻击</description>
+    </item>
+    
     <item>
       <title>校园网多设备检测绕过</title>
       <link>https://izeroo.cn/post/bypass-campus-network-detect/</link>
