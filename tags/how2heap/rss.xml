@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>how2heap on Zero&#39;s Record</title>
+    <link>https://izeroo.cn/tags/how2heap/</link>
+    <description>Recent content in how2heap on Zero&#39;s Record</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 22 Nov 2022 22:23:00 +0800</lastBuildDate><atom:link href="https://izeroo.cn/tags/how2heap/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>how2heap posion null byte</title>
+      <link>https://izeroo.cn/post/how2heap-posion-null-byte.html</link>
+      <pubDate>Tue, 22 Nov 2022 22:23:00 +0800</pubDate>
+      
+      <guid>https://izeroo.cn/post/how2heap-posion-null-byte.html</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

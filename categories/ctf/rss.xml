@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CTF on Zero&#39;s Record</title>
+    <link>https://izeroo.cn/categories/ctf/</link>
+    <description>Recent content in CTF on Zero&#39;s Record</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 17 Apr 2021 07:05:19 +0000</lastBuildDate><atom:link href="https://izeroo.cn/categories/ctf/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>极客大挑战 2019 Secret File Writeup</title>
+      <link>https://izeroo.cn/post/secret-file-writeup/</link>
+      <pubDate>Sat, 17 Apr 2021 07:05:19 +0000</pubDate>
+      
+      <guid>https://izeroo.cn/post/secret-file-writeup/</guid>
+      <description>打开网站啥都没看到，Ctrl+A全选看到了隐藏的信息 点进去后可以看到另外一个页面，可以看到链接是指向action.php，但是点进去却看不到</description>
+    </item>
+    
+  </channel>
+</rss>

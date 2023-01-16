@@ -1,0 +1,1225 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)" />
+<meta name="generator" content="Hugo 0.109.0">
+<link rel="shortcut icon" type="image/x-icon" href="/imgs/icons/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/imgs/icons/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/imgs/icons/favicon_16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/imgs/icons/favicon_32_32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/imgs/icons/apple_touch_icont.png">
+<meta itemprop="name" content="Posts" />
+<meta itemprop="description" content="..." />
+<meta itemprop="image" content="https://izeroo.cn/imgs/avatar.jpg" />
+<meta itemprop="keywords" content="Hugo" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Posts" />
+<meta property="og:description" content="..." />
+<meta property="og:image" content="/imgs/avatar.jpg" />
+<meta property="og:image:width" content="312" />
+<meta property="og:image:height" content="312" />
+<meta property="og:image:type" content="image/jpeg/png/svg/jpg" />
+<meta property="og:url" content="https://izeroo.cn/post/"/>
+<meta property="og:site_name" content="Zero&#39;s Record" />
+<meta property="og:locale" content="zh-CN"/>
+
+
+  
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.1.2/css/all.min.css" />
+  
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" />
+  
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.css" />
+
+
+<link rel="stylesheet" href="/css/main.min.d7c5d725417b9669f2e8e1317d3939b0a18e6b68e6cec1800b79a3b0db4c70d9.css">
+  <style type="text/css">
+    .post-footer, .flinks-list-footer hr:after {
+      content: "~ 我可是有底线的哟 ~";
+    }
+  </style>
+  
+<script type="text/javascript">
+(function(){
+  localDB = {
+    set: function (key, value, ttl) {
+      if (ttl === 0) return;
+      const now = new Date();
+      const expiryDay = ttl * 86400000;
+      const item = {
+        value: value,
+        expiry: now.getTime() + expiryDay
+      };
+      localStorage.setItem(key, JSON.stringify(item));
+    },
+    get: function (key) {
+      const itemStr = localStorage.getItem(key);
+      if (!itemStr) {
+        return undefined;
+      }
+  
+      const item = JSON.parse(itemStr);
+      const now = new Date();
+  
+      if (now.getTime() > item.expiry) {
+        localStorage.removeItem(key);
+        return undefined;
+      }
+      return item.value;
+    }
+  };
+
+  theme = {
+    active: function() {
+      const localState = localDB.get('theme');
+      if (localState == undefined) return;
+      theme.toggle(localState);
+      window.matchMedia("(prefers-color-scheme: dark)").addListener(function (evt) {
+        theme.toggle(evt.matches ? 'dark' : 'light');
+      });
+    },
+
+    toggle: function (theme) {
+      document.documentElement.setAttribute('data-theme',  theme);
+      localDB.set('theme', theme, 2);
+      
+      const iframe = document.querySelector('iframe.giscus-frame');
+      if (iframe) {
+        const config = { setConfig: { theme: theme } };
+        iframe.contentWindow.postMessage({ giscus: config }, 'https://giscus.app');
+      }
+    }
+  };
+
+  theme.active();
+})(window);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"comments":true,"isHome":false,"isPage":false,"path":"post","permalink":"https://izeroo.cn/post/","title":"Posts","waline":{"js":[{"alias":"waline","alias_name":"@waline/client","file":"dist/pageview.js","name":"pageview","version":"2.13.0"},{"alias":"waline","alias_name":"@waline/client","file":"dist/comment.js","name":"comment","version":"2.13.0"}]}}</script>
+  <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  var script = document.createElement('script');
+    
+  script.charset = "UTF-8";
+  script.src     = "https:\/\/busuanzi.ibruce.info\/busuanzi\/2.3\/busuanzi.pure.mini.js";
+  script.async   = false
+  script.defer   = true
+  
+  document.head.appendChild(script);
+  script.onload = function() {
+    NexT.utils.fmtBusuanzi();
+  }
+});
+</script>
+
+
+
+
+  <title>post - Zero&#39;s Record</title>
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage"  class="use-motion" >
+  <div class="headband"></div>
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner">
+<div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Zero&#39;s Record</h1>
+      <i class="logo-line"></i>
+    </a>
+    
+      <p class="site-subtitle" itemprop="description">记录值得记录的事情</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+      
+      <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+    <li class="menu-item menu-item-home">
+      <a href="/" class="hvr-icon-pulse " rel="section"><i class="fa fa-home hvr-icon"></i>首页
+      </a>
+    </li>
+    <li class="menu-item menu-item-about">
+      <a href="/about.html" class="hvr-icon-pulse " rel="section"><i class="fa fa-user hvr-icon"></i>关于
+      </a>
+    </li>
+    <li class="menu-item menu-item-archives">
+      <a href="/archives/" class="hvr-icon-pulse " rel="section"><i class="fa fa-archive hvr-icon"></i>归档
+        <span class="badge">14</span>
+      </a>
+    </li>
+    <li class="menu-item menu-item-search">
+      <a role="button" class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+    </div>
+  </div>
+      </div>
+      <div class="toggle sidebar-toggle" role="button">
+  <span class="toggle-line"></span>
+  <span class="toggle-line"></span>
+  <span class="toggle-line"></span>
+</div>
+<aside class="sidebar">
+  
+
+  <div class="sidebar-inner sidebar-overview-active">
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-toc">
+        文章目录
+      </li>
+      <li class="sidebar-nav-overview">
+        站点概览
+      </li>
+    </ul>
+    <div class="sidebar-panel-container">
+      
+      <div class="post-toc-wrap sidebar-panel">
+        <div class="post-toc animated"></div>
+      </div>
+      
+      <div class="site-overview-wrap sidebar-panel">
+<div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zero"
+    src="/imgs/img-lazy-loading.gif" data-src="/imgs/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Zero</p>
+  <div class="site-description" itemprop="description">...</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+    <div class="site-state-item site-state-posts">
+      <a href="/archives/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">日志</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-categories">
+      <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+      </a>
+    </div>
+    <div class="site-state-item site-state-tags">
+      <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span>
+      </a>
+    </div>
+  </nav>
+</div>
+<div class="links-of-social site-overview-item animated">
+
+
+  <span class="links-of-social-item">
+    <a href="https://github.com/izeroo" title="Github → https://github.com/izeroo" rel="noopener" class="hvr-icon-pulse" target="_blank">
+      <i class="fab fa-github fa-fw  hvr-icon "></i>Github
+    </a>
+  </span>
+</div>
+<div class="cc-license animated" itemprop="license">
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank" title="共享知识">
+    <img src="/imgs/img-lazy-loading.gif" data-src="/imgs/cc/big/by_nc_sa.svg" alt="共享知识">
+  </a>
+</div>
+<div class="links-of-blogroll site-overview-item animated">
+  <div class="links-of-blogroll-title">
+    <i class="fa fa-globe fa-fw"></i>友情链接
+  </div>
+  <ul class="links-of-blogroll-list">
+    <li class="links-of-blogroll-item">
+      <a href="https://gitee.com/hugo-next/hugo-theme-next" title="https://gitee.com/hugo-next/hugo-theme-next" target="_blank">Hugo-NexT</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="https://lisenhui.cn" title="https://lisenhui.cn" target="_blank">凡梦星尘空间站</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="https://lemono.fun" title="https://lemono.fun" target="_blank">Lemono</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="http://yuno0n.top" title="http://yuno0n.top" target="_blank">Yunoon</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="https://momoe.ml" title="https://momoe.ml" target="_blank">Zy143L</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="https://9bingyin.com" title="https://9bingyin.com" target="_blank">Bingyin</a>
+    </li>
+    <li class="links-of-blogroll-item">
+      <a href="https://www.tangrr.top" title="https://www.tangrr.top" target="_blank">皮皮</a>
+    </li>
+  </ul>
+</div>
+      </div>
+    </div>
+   
+  </div>
+<div id="siteinfo-card-widget" class="sidebar-card-widget">
+  <div class="item-headline">
+    <i class="fas fa-chart-line"></i>
+    <span>网站资讯</span>
+  </div>
+  <div class="siteinfo">
+    <div class="siteinfo-item">
+      <div class="item-name"><i class="fa-solid fa-calendar-check"></i>已运行：</div>
+      <div class="item-count" id="runTimes" data-publishdate="0001-01-01T00:00:00&#43;00:00"></div>
+    </div>
+      <div class="siteinfo-item">
+        <div class="item-name">
+          <i class="fas fa fa-user"></i>总访客数：
+        </div>
+        <div class="item-count" id="busuanzi_value_site_uv"><i class="fa fa-sync fa-spin"></i></div>
+      </div>
+      <div class="siteinfo-item">
+        <div class="item-name">
+          <i class="fas fa fa-eye"></i>页面浏览：
+        </div>
+        <div class="item-count" id="busuanzi_value_site_pv"><i class="fa fa-sync fa-spin"></i></div>
+      </div>
+    <div class="siteinfo-item">
+      <div class="item-name"><i class="fa fa-font"></i>总字数：</div>
+      <div class="item-count" id="wordsCount" data-count="16357"></div>
+    </div>
+    <div class="siteinfo-item">
+      <div class="item-name"><i class="fa fa-mug-hot"></i>阅读约：</div>
+      <div class="item-count" id="readTimes" data-times="41"></div>
+    </div>
+    <div class="siteinfo-item">
+      <div class="item-name"><i class="fa fa-clock-rotate-left"></i>最后更新于：</div>
+      <div class="item-count" id="last-push-date" data-lastpushdate="2022-11-22T22:23:00&#43;08:00"></div>
+    </div>
+  </div>
+</div>
+</aside>
+<div class="sidebar-dimmer"></div>
+
+    </header>
+    
+    <div class="tool-buttons" >
+  
+  <div id="goto-comments" class="button goto-comments" title="直达评论">
+    <i class="fas fa-comments"></i>
+  </div>
+    
+  
+  <div id="toggle-theme" class="button" title="深浅模式切换">
+    <i class="fas fa-adjust"></i>
+  </div>
+  <div class="back-to-top" role="button" title="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div> 
+</div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+    <div class="main-inner index posts-expand">
+      
+
+
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/how2heap-posion-null-byte.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="how2heap posion null byte">
+      <meta itemprop="description" content="how2heap posion null byte学习">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/how2heap-posion-null-byte.html" itemprop="url" class="post-title-link">how2heap posion null byte</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-11-22 22:23:00 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-11-22 22:23:00 &#43;0800 CST">2022-11-22</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/how2heap-posion-null-byte.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/csapp-malloc-lab.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CSAPP Malloc Lab">
+      <meta itemprop="description" content="csapp malloc lab implementation">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/csapp-malloc-lab.html" itemprop="url" class="post-title-link">CSAPP Malloc Lab</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-10-06 00:20:32 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-10-06 00:20:32 &#43;0800 CST">2022-10-06</time>
+</span>
+    
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar-check"></i>
+  </span>
+  <span class="post-meta-item-text">更新于：</span>
+  <time title="修改时间：2022-10-09T22:37:32&#43;08:00" itemprop="dateModified" datetime="2022-10-09T22:37:32&#43;08:00">2022-10-09</time>
+</span>
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/csapp" itemprop="url" rel="index">
+      <span itemprop="name">CSAPP</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  最近准备研究堆题，于是打算把 CSAPP 的 malloc lab 给完成了，记录一下知识点。 为什么要使用动态内存分配 虽然可以使用低级的 mmap 和 munmap 函数来创建和删除虚拟内存的区域
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/csapp-malloc-lab.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/canary-bypass.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Canary绕过">
+      <meta itemprop="description" content="Canary介绍 本节摘自CTF WIki，感谢CTF Wiki项目 Canary 的意思是金丝雀，来源于英国矿井工人用来探查井下气体是否有毒的金丝雀笼子。工人">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/canary-bypass.html" itemprop="url" class="post-title-link">Canary绕过</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-09-29 10:40:23 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-09-29 10:40:23 &#43;0800 CST">2022-09-29</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  Canary介绍 本节摘自CTF WIki，感谢CTF Wiki项目 Canary 的意思是金丝雀，来源于英国矿井工人用来探查井下气体是否有毒的金丝雀笼子。工人
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/canary-bypass.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/exploiting-ret2xx.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ret2text的原理及利用">
+      <meta itemprop="description" content="原理 ret2text 即控制程序执行程序本身已有的的代码 (.text)。其实，这种攻击方法是一种笼统的描述。我们控制执行程序已有的代码的时候也可以控制程序执">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/exploiting-ret2xx.html" itemprop="url" class="post-title-link">ret2text的原理及利用</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-09-29 09:49:23 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-09-29 09:49:23 &#43;0800 CST">2022-09-29</time>
+</span>
+    
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar-check"></i>
+  </span>
+  <span class="post-meta-item-text">更新于：</span>
+  <time title="修改时间：2022-09-29T10:49:23&#43;08:00" itemprop="dateModified" datetime="2022-09-29T10:49:23&#43;08:00">2022-09-29</time>
+</span>
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  原理 ret2text 即控制程序执行程序本身已有的的代码 (.text)。其实，这种攻击方法是一种笼统的描述。我们控制执行程序已有的代码的时候也可以控制程序执
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/exploiting-ret2xx.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/migrating-to-hugo.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="从Wordpress迁移到Hugo">
+      <meta itemprop="description" content="记录从Wordpress迁移到Hugo的经历">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/migrating-to-hugo.html" itemprop="url" class="post-title-link">从Wordpress迁移到Hugo</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-09-27 23:41:23 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-09-27 23:41:23 &#43;0800 CST">2022-09-27</time>
+</span>
+    
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar-check"></i>
+  </span>
+  <span class="post-meta-item-text">更新于：</span>
+  <time title="修改时间：2022-09-28T19:58:00&#43;08:00" itemprop="dateModified" datetime="2022-09-28T19:58:00&#43;08:00">2022-09-28</time>
+</span>
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  大概半年以前？我尝试过迁移到Hexo，但是有太多的问题没法解决：WP的文章在导出后整理图片路径很麻烦，也没想到很好的同步文章到服务器的方式，
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/migrating-to-hugo.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/Hugo%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88/">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hugo的文件管理方案">
+      <meta itemprop="description" content="Hugo的文件管理方案">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/Hugo%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88/" itemprop="url" class="post-title-link">Hugo的文件管理方案</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-09-27 17:34:23 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-09-27 17:34:23 &#43;0800 CST">2022-09-27</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body " itemprop="articleBody">
+      
+  如果需要在文章中插入图片，则新建同名文件夹，在文件夹内保存文章为index.md，图片在md文档相同目录 参考： Hugo 的文件管理方案 | Jeremy&rsquo;s blog (isyin.cn)
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/Hugo%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88/#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/quine/">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Quine">
+      <meta itemprop="description" content="s = &#34;&#39;s = &#39; &#43; repr(s) &#43; &#39;\\nprint(&#39; &#43; s &#43; &#39;)&#39;&#34; print(&#39;s = &#39; &#43; repr(s) &#43; &#39;\nprint(&#39; &#43; s &#43; &#39;)&#39;)">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/quine/" itemprop="url" class="post-title-link">Quine</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-06-24 16:54:47 &#43;0000 &#43;0000" itemprop="dateCreated datePublished" datetime="2022-06-24 16:54:47 &#43;0000 &#43;0000">2022-06-24</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body " itemprop="articleBody">
+      
+  s = &#34;&#39;s = &#39; + repr(s) + &#39;\\nprint(&#39; + s + &#39;)&#39;&#34; print(&#39;s = &#39; + repr(s) + &#39;\nprint(&#39; + s + &#39;)&#39;)
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/quine/#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/hello-world.html">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="Zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="世界，你好！">
+      <meta itemprop="description" content="快速的描述下有关于 Hugo 建站的基本用法。">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/hello-world.html" itemprop="url" class="post-title-link">世界，你好！</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-06-02 11:52:03 &#43;0800 CST" itemprop="dateCreated datePublished" datetime="2022-06-02 11:52:03 &#43;0800 CST">2022-06-02</time>
+</span>
+    
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar-check"></i>
+  </span>
+  <span class="post-meta-item-text">更新于：</span>
+  <time title="修改时间：2022-06-03T16:43:23&#43;08:00" itemprop="dateModified" datetime="2022-06-03T16:43:23&#43;08:00">2022-06-03</time>
+</span>
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body  autonumber " itemprop="articleBody">
+      
+  <blockquote>
+<p>“使用 <code>weight</code> 关键字置顶文章。”</p>
+</blockquote>
+<p>
+<a href="https://gohugo.io/" title="Hugo" rel="noopener external nofollow noreferrer" target="_blank" class=" exturl">
+    Hugo
+    <i class="fa fa-external-link-alt"></i>
+</a> 是现今世界上最快的网站建设框架，也是最流行的开源静态站点生成器之一。 凭借其惊人的速度和灵活性，Hugo 让建设网站再次变得有趣起来。</p>
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/hello-world.html#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/linux-pwn-env-setup/">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Linux pwn环境搭建">
+      <meta itemprop="description" content="1.安装pwntools sudo apt-get update sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple python3 -m pip install --upgrade pip python3 -m pip install --upgrade pwntools echo export PATH=&#34;/home/`whoami`/.local/bin:\$PATH&#34; &gt;&gt; ~/.zshrc 2.安装pwngdb cd ~/.local git clone https://github.com/pwndbg/pwndbg cd pwndbg ./setup.sh 3.安装s">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/linux-pwn-env-setup/" itemprop="url" class="post-title-link">Linux pwn环境搭建</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2022-03-20 16:43:13 &#43;0000 &#43;0000" itemprop="dateCreated datePublished" datetime="2022-03-20 16:43:13 &#43;0000 &#43;0000">2022-03-20</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body " itemprop="articleBody">
+      
+  1.安装pwntools sudo apt-get update sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple python3 -m pip install --upgrade pip python3 -m pip install --upgrade pwntools echo export PATH=&#34;/home/`whoami`/.local/bin:\$PATH&#34; &gt;&gt; ~/.zshrc 2.安装pwngdb cd ~/.local git clone https://github.com/pwndbg/pwndbg cd pwndbg ./setup.sh 3.安装s
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/linux-pwn-env-setup/#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+  <div class="post-block">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://izeroo.cn/post/encrypting-dns/">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/imgs/avatar.jpg">
+      <meta itemprop="name" content="zero">
+    </span>
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zero">
+      <meta itemprop="description" content="...">
+    </span>
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="记Openwrt&#43;旁路由实现dns劫持分流加密">
+      <meta itemprop="description" content="需求： 劫持并加密所有明文DNS请求，对于大陆的IP直接使用阿里公共DNS(https://223.5.5.5/dns-query)实现加密解">
+    </span>
+    <header class="post-header">
+       <h2 class="post-title" itemprop="name headline">
+  <a href="/post/encrypting-dns/" itemprop="url" class="post-title-link">记Openwrt&#43;旁路由实现dns劫持分流加密</a> </h2> <div class="post-meta-container">
+  <div class="post-meta-items">
+    
+
+
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-calendar"></i>
+  </span>
+  <span class="post-meta-item-text">发表于：</span>
+  <time title="发表于：2021-12-02 10:49:23 &#43;0000 &#43;0000" itemprop="dateCreated datePublished" datetime="2021-12-02 10:49:23 &#43;0000 &#43;0000">2021-12-02</time>
+</span>
+    
+    
+<span class="post-meta-item">
+  <span class="post-meta-item-icon">
+    <i class="far fa-folder-open"></i>
+  </span>
+  <span class="post-meta-item-text">分类于：</span>
+  <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+    <a href="/categories/%E5%8D%9A%E5%AE%A2" itemprop="url" rel="index">
+      <span itemprop="name">博客</span>
+    </a>
+  </span>
+</span>
+    
+    <div class="post-meta-items">
+      
+      
+    </div>
+        
+  </div>
+</div>
+
+    </header>
+    
+    <div class="post-body " itemprop="articleBody">
+      
+  需求： 劫持并加密所有明文DNS请求，对于大陆的IP直接使用阿里公共DNS(https://223.5.5.5/dns-query)实现加密解
+
+    </div>
+    <footer class="post-footer">
+      
+<div class="post-button">
+  <a class="btn" href="/post/encrypting-dns/#more" rel="contents">
+    阅读全文 &raquo;
+  </a>
+</div>
+<div class="post-eof"></div>
+    </footer>
+  </article>
+</div>
+<nav class="pagination">
+        <span class="page-number current">1</span>
+        <a class="page-number" href="/post/page/2/">2</a>
+  <a class="extend next" rel="next" href="/post/page/2/">
+    <i class="fa fa-angle-right"></i>
+  </a>
+</nav>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+
+<div class="copyright">
+  &copy;
+  <span itemprop="copyrightYear">
+    2021 - 2023
+  </span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zero</span>
+</div>
+<div class="powered-by">
+  由 <a href='https://gohugo.io' title='0.109.0' target='_blank'>Hugo</a> &amp; <a href='https://github.com/hugo-next/hugo-theme-next' title='4.4.0' target='_blank'>Hugo NexT.Gemini</a> 强力驱动
+</div>
+<div class="beian">
+  <a href="https://beian.miit.gov.cn" target="_blank">鄂ICP备2021002440号-1</a>
+  <img src="/imgs/gongan.png" alt="鄂公网安备">
+  <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42112702000080" target="_blank">鄂公网安备 42112702000080 号</a>
+</div>
+
+
+    </div>
+  </footer>
+
+
+
+ 
+  
+  <script type="text/javascript" src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" defer></script>
+ 
+  
+  <script type="text/javascript" src="https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.js" defer></script>
+
+
+<script class="next-config" data-name="main" type="application/json">{"bookmark":{"color":"#222","enable":false,"save":"manual"},"busuanzi":{"pageview":true},"copybtn":true,"darkmode":true,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"https://izeroo.cn","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"fadeInLeft","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"root":"/","scheme":"Gemini","sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"statis":{"enable":true,"plugin":"busuanzi"},"vendor":{"plugins":"unpkg","router":"https://unpkg.com"},"version":"4.4.0","waline":{"cfg":{"emoji":false,"imguploader":false,"pageview":"#waline-pageview-count","placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":"https://waline.izeroo.cn","sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"waline","file":"dist/waline.css","name":"@waline/client","version":"2.13.0"},"js":{"alias":"waline","file":"dist/waline.js","name":"@waline/client","version":"2.13.0"}}}</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/js/main.min.e34208af37d3db3a875e6fbad04c2f1c241185af925a9c6ebf79dd1ba2730cdd.js" defer></script>
+
+
+
+
+</body>
+
+</html>
