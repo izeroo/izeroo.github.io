@@ -1,0 +1,296 @@
+<!doctype html><html lang=zh-cn data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width"><meta name=theme-color content="#222" media="(prefers-color-scheme: dark)"><meta name=generator content="Hugo 0.111.3"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icont.png><meta itemprop=name content="透明代理的旁路由实现、原理和常见的误区"><meta itemprop=description content="本文介绍了通过旁路网关实现透明代理的方法，并介绍了其原理以及澄清了一些广泛的误解"><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="https://izeroo.cn/imgs/avatar.jpg"><meta itemprop=keywords content="旁路由,透明代理,redirect,tproxy"><meta property="og:type" content="article"><meta property="og:title" content="透明代理的旁路由实现、原理和常见的误区"><meta property="og:description" content="本文介绍了通过旁路网关实现透明代理的方法，并介绍了其原理以及澄清了一些广泛的误解"><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="https://izeroo.cn/post/router-transparent-proxy.html"><meta property="og:site_name" content="Zero's Record"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="Zero"><meta property="article:published_time" content="2023-08-13 22:30:43 +0800 CST"><meta property="article:modified_time" content="2023-08-14 15:04:49 +0800 CST"><link type=text/css rel=stylesheet href=https://unpkg.com/@fortawesome/fontawesome-free@6.1.2/css/all.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/animate.css@3.1.1/animate.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.css><link rel=stylesheet href=/css/main.min.fbdf2d7a7a7b64fd23bcb27e5c61762041e08c9eeb5a68d056f3b66bf87bd926.css><style type=text/css>.post-footer,.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script class=next-config data-name=page type=application/json>{"comments":true,"isHome":false,"isPage":true,"path":"router-transparent-proxy.html","permalink":"https://izeroo.cn/post/router-transparent-proxy.html","title":"透明代理的旁路由实现、原理和常见的误区","waline":{"js":[{"alias":"waline","alias_name":"@waline/client","file":"dist/pageview.js","name":"pageview","version":"2.13.0"},{"alias":"waline","alias_name":"@waline/client","file":"dist/comment.js","name":"comment","version":"2.13.0"}]}}</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>透明代理的旁路由实现、原理和常见的误区 - Zero's Record</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>Zero's Record</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description>记录值得记录的事情</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/about.html class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-archives"><a href=/archives/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>16</span></a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-nav-active sidebar-toc-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=Zero src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>Zero</p><div class=site-description itemprop=description>...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>16</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/izeroo title="Github → https://github.com/izeroo" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li><li class=links-of-blogroll-item><a href=https://lemono.fun title=https://lemono.fun target=_blank>Lemono</a></li><li class=links-of-blogroll-item><a href=http://yuno0n.top title=http://yuno0n.top target=_blank>Yunoon</a></li><li class=links-of-blogroll-item><a href=https://momoe.ml title=https://momoe.ml target=_blank>Zy143L</a></li><li class=links-of-blogroll-item><a href=https://9bingyin.com title=https://9bingyin.com target=_blank>Bingyin</a></li><li class=links-of-blogroll-item><a href=https://www.tangrr.top title=https://www.tangrr.top target=_blank>皮皮</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate=2018-08-27T17:32:11+08:00></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=28833></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=67></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate=2023-11-14T22:56:00+08:00></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-comments class="button goto-comments" title=直达评论><i class="fas fa-comments"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=https://izeroo.cn/post/router-transparent-proxy.html><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="Zero"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="Zero"><meta itemprop=description content="..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content="透明代理的旁路由实现、原理和常见的误区"><meta itemprop=description content="本文介绍了通过旁路网关实现透明代理的方法，并介绍了其原理以及澄清了一些广泛的误解"></span><header class=post-header><h1 class=post-title itemprop="name headline">透明代理的旁路由实现、原理和常见的误区</h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i></span>
+<span class=post-meta-item-text title=发表于>发表于：</span>
+<time title="创建时间：2023-08-13 22:30:43 +0800 CST" itemprop="dateCreated datePublished" datetime="2023-08-13 22:30:43 +0800 CST">2023-08-13</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar-check"></i></span>
+<span class=post-meta-item-text title=更新于>更新于：</span>
+<time title=修改时间：2023-08-14T15:04:49+08:00 itemprop=dateModified datetime=2023-08-14T15:04:49+08:00>2023-08-14</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-folder-open"></i></span>
+<span class=post-meta-item-text title=分类于>分类于：</span>
+<span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/%E7%BD%91%E7%BB%9C itemprop=url rel=index><span itemprop=name>网络</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="far fa-file-word"></i></span>
+<span class=post-meta-item-text>字数：</span>
+<span>2123</span></span>
+<span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="far fa-clock"></i></span>
+<span class=post-meta-item-text>阅读：&ap;</span>
+<span>5分钟</span></span>
+<span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="far fa-eye"></i></span>
+<span class=post-meta-item-text>浏览：</span>
+<span id=busuanzi_value_page_pv data-path=/post/router-transparent-proxy.html><i class="fa fa-sync fa-spin"></i></span></span>
+<span class=post-meta-item title><span class=post-meta-item-icon><i class="far fa-comments"></i></span>
+<span class=post-meta-item-text title=评论>评论：</span>
+<span id=comments-count class=waline-comment-count data-path=/post/router-transparent-proxy.html><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class="post-body autonumber" itemprop=articleBody><p>首先介绍旁路由是什么，旁路由也叫旁路网关，比较典型的架构是通过一个单网口的设备（N1盒子、开发板等）接入主路由，然后在主路由的的DHCP选项里将LAN口网关设置为该设备的IP（也就是所谓的“网关互指”，其实根本就没有互指，主路由的网关依然是原来的网关，只是接入主路由的设备的网关变成了旁路由），流量经由该设备分流，实现科学研究的目的。</p><p><strong>提醒，使用旁路由时必须关闭主路由的硬件加速，否则会出现各种各样的问题！！！</strong></p><p>具体的网络拓扑如下图所示。</p><img src=./1-1691937895684-4.png alt=img style=zoom:50%><p>（图片来自：
+<a href=https://sspai.com/post/68511 title="Openwrt 作为旁路网关（不是旁路由、单臂路由）的终极设置方法，破解迷思 - 少数派 (sspai.com)" rel="noopener external nofollow noreferrer" target=_blank class=exturl>Openwrt 作为旁路网关（不是旁路由、单臂路由）的终极设置方法，破解迷思 - 少数派 (sspai.com)
+<i class="fa fa-external-link-alt"></i>
+</a>）</p><p>再分析流量的走向，在<strong>理想情况</strong>下，我们会有下图的流量走向。</p><img src=./d247c8b3d92cd3990245b622d5e7aa56.png alt=旁路由架构的数据流转示意图 style=zoom:67%><p>（图片来自：
+<a href=https://easonyang.com/posts/transparent-proxy-in-router-gateway/ title="旁路由的原理与配置一文通 - Eason Yang&amp;rsquo;s Blog" rel="noopener external nofollow noreferrer" target=_blank class=exturl>旁路由的原理与配置一文通 - Eason Yang&rsquo;s Blog
+<i class="fa fa-external-link-alt"></i>
+</a>）</p><p>可是事实真的如此么？其实不然，要达到这种理想情况，目前大部分的教程给出的方法都多多少少存在的问题，实际上的网络走向不会是这样，下行流量也会经过旁路由，导致跑国内 speedtest 的时候旁路由的利用率暴涨。可以用 htop 或者 btop观察到这一点。</p><p>造成这种情况的有两种原因：</p><ol><li>在旁路由上进行了SNAT，导致所有的连接都必须经过旁路由，即<code>iptables -t nat -I POSTROUTING -j MASQUERADE</code>规则</li><li>透明代理的实现原理决定了实现透明代理必须将两条TCP流拼接在一起（UDP未验证，不是本文的重点），这样所有的连接都也必须经过旁路由</li></ol><p>第一点的情况比较常见，其实也是情有可原，因为如果不在旁路由上开启SNAT，很可能主路由对流量的处理会出现问题，即：不开启透明代理的情况下无法访问WAN区域的主机。</p><p>造成此情况的原因有以下：</p><ul><li>由于主路由设置了<code>net.bridge.bridge-nf-call-*tables = 1</code>，导致无线流量未被正确的NAT，此时有线网络可以正常访问WAN区域的主机。原因见：
+<a href=https://blog.csdn.net/qq1337715208/article/details/122271608 title=关于旁路由设置后，主路由WIFI无法上网的问题_旁路由作为网关不能上网_锦夏挽秋的博客-CSDN博客 rel="noopener external nofollow noreferrer" target=_blank class=exturl>关于旁路由设置后，主路由WIFI无法上网的问题_旁路由作为网关不能上网_锦夏挽秋的博客-CSDN博客
+<i class="fa fa-external-link-alt"></i></a></li><li>未开启IP转发，即<code>net.ipv4.ip_forward = 0</code>，导致旁路由在收到其他设备发送的数据包时不会转发给主路由。原因见：
+<a href=https://unix.stackexchange.com/questions/673573/what-exactly-happens-when-i-enable-net-ipv4-ip-forward-1 title="networking - What exactly happens when I enable net.ipv4.ip_forward=1? - Unix &amp;amp; Linux Stack Exchange" rel="noopener external nofollow noreferrer" target=_blank class=exturl>networking - What exactly happens when I enable net.ipv4.ip_forward=1? - Unix & Linux Stack Exchange
+<i class="fa fa-external-link-alt"></i></a></li><li>开启了IP转发，但是主路由认为该数据包不合法，或对该数据包的处理不正确，因为旁路由的MAC对应了多个来源地址，建议使用Openwrt，不过这种情况比较少见</li></ul><p>接下来说说第二点，即在正确设置了上面的内核参数的情况下，为什么下行流量还是会经过旁路由。</p><p>为了证明这一点，我们需要了解透明代理的原理：</p><p>简单来说，透明代理就相当于DNAT，其将流量重定向到本地的服务，由本地的服务再发起真正的连接，然后其将两条连接拼在一起，起到了中间人的作用。</p><p>C语言示例：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;arpa/inet.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/types.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;sys/socket.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;linux/netfilter_ipv4.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdlib.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;signal.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#define PORT 12345
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define ADDR &#34;127.0.0.1&#34;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define BUFFER_SIZE 4096
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e># 设置策略路由
+</span></span></span><span style=display:flex><span><span style=color:#75715e>ip rule add fwmark 1 table 100
+</span></span></span><span style=display:flex><span><span style=color:#75715e>ip route add local 0.0.0.0/0 dev lo table 100
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># PREROUTING
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -N V2RAY
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A V2RAY -d 127.0.0.1/32 -j RETURN # 透明代理响应局域网（本机）的请求
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A V2RAY -d 192.168.0.0/16 -j RETURN # 透明代理响应局域网（本机）的请求
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A V2RAY -p tcp -j TPROXY --on-port 12345 --tproxy-mark 1 # 给 TCP 打标记 1，转发至 12345 端口
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A PREROUTING -j V2RAY # 应用规则
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e># OUTPUT
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -N V2RAY_MASK
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A V2RAY_MASK -j RETURN -m mark --mark 0xff    # 直连 SO_MARK 为 0xff 的流量，此规则目的是避免代理本机(网关)流量出现回环问题
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A V2RAY_MASK -p tcp -j MARK --set-mark 1   # 给 TCP 打标记，重路由
+</span></span></span><span style=display:flex><span><span style=color:#75715e>iptables -t mangle -A OUTPUT -j V2RAY_MASK # 应用规则
+</span></span></span><span style=display:flex><span><span style=color:#75715e> */</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>forward_data</span>(<span style=color:#66d9ef>int</span> from_sock, <span style=color:#66d9ef>int</span> to_sock)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>char</span> buffer[BUFFER_SIZE];
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>ssize_t</span> bytes_read;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>while</span> ((bytes_read <span style=color:#f92672>=</span> <span style=color:#a6e22e>read</span>(from_sock, buffer, <span style=color:#66d9ef>sizeof</span>(buffer))) <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>ssize_t</span> bytes_written <span style=color:#f92672>=</span> <span style=color:#a6e22e>write</span>(to_sock, buffer, bytes_read);
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> (bytes_written <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>		{
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;write&#34;</span>);
+</span></span><span style=display:flex><span>			<span style=color:#66d9ef>break</span>;
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>close</span>(from_sock);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>close</span>(to_sock);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>void</span> <span style=color:#a6e22e>handle_client</span>(<span style=color:#66d9ef>int</span> client_sock, <span style=color:#66d9ef>struct</span> sockaddr_in client_addr)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> server_sock;
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>struct</span> sockaddr_in intended_dest_addr;
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>socklen_t</span> dest_addr_len <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span>(intended_dest_addr);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	server_sock <span style=color:#f92672>=</span> <span style=color:#a6e22e>socket</span>(AF_INET, SOCK_STREAM, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> (server_sock <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;error creating server socket&#34;</span>);
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>close</span>(client_sock);
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// set so_mark
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#66d9ef>int</span> mark <span style=color:#f92672>=</span> <span style=color:#ae81ff>0xff</span>;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>setsockopt</span>(server_sock, SOL_SOCKET, SO_MARK, <span style=color:#f92672>&amp;</span>mark, <span style=color:#66d9ef>sizeof</span>(mark));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>getsockname</span>(client_sock, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>intended_dest_addr, <span style=color:#f92672>&amp;</span>dest_addr_len);
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// REDIRECT mode:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#75715e>// getsockopt (client_fd, SOL_IP, SO_ORIGINAL_DST, &amp;intended_dest_addr, &amp;dest_addr_len);
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;they think they&#39;re talking to %s:%d</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>,
+</span></span><span style=display:flex><span>		   <span style=color:#a6e22e>inet_ntoa</span>(intended_dest_addr.sin_addr),
+</span></span><span style=display:flex><span>		   <span style=color:#a6e22e>ntohs</span>(intended_dest_addr.sin_port));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>connect</span>(server_sock, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>intended_dest_addr, dest_addr_len) <span style=color:#f92672>==</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;error connecting to destination server&#34;</span>);
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>close</span>(client_sock);
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>close</span>(server_sock);
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#75715e>// Create separate threads or processes to handle data forwarding in both directions
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>fork</span>() <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>forward_data</span>(client_sock, server_sock);
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>fork</span>() <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>forward_data</span>(server_sock, client_sock);
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>signal</span>(SIGCHLD, SIG_IGN); <span style=color:#75715e>// kernel reap the exited child
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> listener_fd <span style=color:#f92672>=</span> <span style=color:#a6e22e>socket</span>(AF_INET, SOCK_STREAM, <span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>int</span> value <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>setsockopt</span>(listener_fd, SOL_IP, IP_TRANSPARENT, <span style=color:#f92672>&amp;</span>value, <span style=color:#66d9ef>sizeof</span>(value)); <span style=color:#75715e>// 允许发送来源地址非本机的数据报
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>struct</span> sockaddr_in name;
+</span></span><span style=display:flex><span>	name.sin_family <span style=color:#f92672>=</span> AF_INET;						 <span style=color:#75715e>// TCP
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	name.sin_port <span style=color:#f92672>=</span> <span style=color:#a6e22e>htons</span>(PORT);					 <span style=color:#75715e>// 本地监听端口
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>	<span style=color:#a6e22e>inet_pton</span>(AF_INET, ADDR, <span style=color:#f92672>&amp;</span>name.sin_addr.s_addr); <span style=color:#75715e>// 绑定的IP地址
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>bind</span>(listener_fd, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>name, <span style=color:#66d9ef>sizeof</span>(name)) <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;bind failed&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>listen</span>(listener_fd, <span style=color:#ae81ff>10</span>) <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>		<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;listen failed&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;now TPROXY-listening on %s:%d&#34;</span>, ADDR, PORT);
+</span></span><span style=display:flex><span>	<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;...</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>but actually accepting any TCP SYN with dport 80, regardless of&#34;</span>
+</span></span><span style=display:flex><span>		   <span style=color:#e6db74>&#34; dest IP, that hits the loopback interface!</span><span style=color:#ae81ff>\n\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#66d9ef>while</span> (<span style=color:#ae81ff>1</span>)
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>struct</span> sockaddr_in client_addr;
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>socklen_t</span> client_addr_len <span style=color:#f92672>=</span> <span style=color:#66d9ef>sizeof</span>(client_addr);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>int</span> client_fd <span style=color:#f92672>=</span> <span style=color:#a6e22e>accept</span>(listener_fd, (<span style=color:#66d9ef>struct</span> sockaddr <span style=color:#f92672>*</span>)<span style=color:#f92672>&amp;</span>client_addr,
+</span></span><span style=display:flex><span>							   <span style=color:#f92672>&amp;</span>client_addr_len);
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>pid_t</span> pid <span style=color:#f92672>=</span> <span style=color:#a6e22e>fork</span>();
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>		{
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;Error forking&#34;</span>);
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>exit</span>(<span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>		<span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>==</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>		{
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;accepted socket from %s:%d; &#34;</span>, <span style=color:#a6e22e>inet_ntoa</span>(client_addr.sin_addr),
+</span></span><span style=display:flex><span>				   <span style=color:#a6e22e>ntohs</span>(client_addr.sin_port));
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>puts</span>(<span style=color:#e6db74>&#34;handling requst&#34;</span>);
+</span></span><span style=display:flex><span>			<span style=color:#a6e22e>handle_client</span>(client_fd, client_addr);
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>测试：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>➜  ~ sudo ./transparent_proxy
+</span></span><span style=display:flex><span>now TPROXY-listening on 127.0.0.1:12345...
+</span></span><span style=display:flex><span>but actually accepting any TCP SYN with dport 80, regardless of dest IP, that hits the loopback interface!
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>accepted socket from 192.168.204.134:49852; handling requst
+</span></span><span style=display:flex><span>they think they&#39;re talking to 1.1.1.1:80
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>➜  ~ curl 1.1.1.1
+</span></span><span style=display:flex><span>&lt;html&gt;
+</span></span><span style=display:flex><span>&lt;head&gt;&lt;title&gt;301 Moved Permanently&lt;/title&gt;&lt;/head&gt;
+</span></span><span style=display:flex><span>&lt;body&gt;
+</span></span><span style=display:flex><span>&lt;center&gt;&lt;h1&gt;301 Moved Permanently&lt;/h1&gt;&lt;/center&gt;
+</span></span><span style=display:flex><span>&lt;hr&gt;&lt;center&gt;cloudflare&lt;/center&gt;
+</span></span><span style=display:flex><span>&lt;/body&gt;
+</span></span><span style=display:flex><span>&lt;/html&gt;
+</span></span></code></pre></div><p>旁路由真机验证：</p><p>使用
+<a href=https://10000.gd.cn/ title=https://10000.gd.cn/ rel="noopener external nofollow noreferrer" target=_blank class=exturl>https://10000.gd.cn/
+<i class="fa fa-external-link-alt"></i></a> 测速，bashtop可以看到跑满流量。</p><p><img src=/imgs/img-lazy-loading.gif data-src=./image-20230813230103577.png alt=image-20230813230103577></p><p>解决办法：</p><p>使用ipset前置分流，对于大陆IP的流量直接由内核转发，不流入透明代理。</p><p>v2raya hooks:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#75715e>#!/bin/bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#75715e># parse the arguments</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>for</span> i in <span style=color:#e6db74>&#34;</span>$@<span style=color:#e6db74>&#34;</span>; <span style=color:#66d9ef>do</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>case</span> $i in
+</span></span><span style=display:flex><span>                --transparent-type<span style=color:#f92672>=</span>*<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        TYPE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>i#*=<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>                        shift
+</span></span><span style=display:flex><span>                        ;;
+</span></span><span style=display:flex><span>                --stage<span style=color:#f92672>=</span>*<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        STAGE<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>i#*=<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>                        shift
+</span></span><span style=display:flex><span>                        ;;
+</span></span><span style=display:flex><span>                --v2raya-confdir<span style=color:#f92672>=</span>*<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        CONFDIR<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>i#*=<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>                        shift
+</span></span><span style=display:flex><span>                        ;;
+</span></span><span style=display:flex><span>                -*|--*<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        echo <span style=color:#e6db74>&#34;Unknown option </span>$i<span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>                        shift
+</span></span><span style=display:flex><span>                        ;;
+</span></span><span style=display:flex><span>                *<span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>                        ;;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>esac</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>done</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e># print $TYPE, $STAGE and $CONFDIR</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Transparent Type = </span><span style=color:#e6db74>${</span>TYPE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Stage            = </span><span style=color:#e6db74>${</span>STAGE<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>echo <span style=color:#e6db74>&#34;Config Directory = </span><span style=color:#e6db74>${</span>CONFDIR<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$STAGE<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;post-stop&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>#清除规则</span>
+</span></span><span style=display:flex><span>        echo <span style=color:#e6db74>&#34;chnroute: purging rules&#34;</span>
+</span></span><span style=display:flex><span>        iptables -t nat -D TP_RULE  -m set --match-set chnroute dst -j RETURN 2&gt;/dev/null
+</span></span><span style=display:flex><span>        exit <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>elif</span> <span style=color:#f92672>[</span> <span style=color:#e6db74>&#34;</span>$STAGE<span style=color:#e6db74>&#34;</span> <span style=color:#f92672>==</span> <span style=color:#e6db74>&#34;post-start&#34;</span> <span style=color:#f92672>]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>        echo <span style=color:#e6db74>&#34;chnroute: adding rules&#34;</span>
+</span></span><span style=display:flex><span>        sleep <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>#创建规则</span>
+</span></span><span style=display:flex><span>        iptables -t nat -I TP_RULE  -m set --match-set chnroute dst -j RETURN 2&gt;/dev/null
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fi</span>
+</span></span></code></pre></div><p>创建ipset：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Bash data-lang=Bash><span style=display:flex><span><span style=color:#75715e>#!/usr/bin/env bash
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>set -ex
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>GREEN<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;\033[0;32m&#39;</span>
+</span></span><span style=display:flex><span>NC<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;\033[0m&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CHNROUTE_URL<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>echo -e <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>GREEN<span style=color:#e6db74>}</span><span style=color:#e6db74>&gt;&gt;&gt; downloading chnroute...</span><span style=color:#e6db74>${</span>NC<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>curl -L -o cn.zone.raw $CHNROUTE_URL
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> <span style=color:#f92672>[[</span> -e <span style=color:#e6db74>&#34;cn.zone.raw&#34;</span> <span style=color:#f92672>]]</span>; <span style=color:#66d9ef>then</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e># create ipset set</span>
+</span></span><span style=display:flex><span>        ipset -q create chnroute hash:net <span style=color:#f92672>||</span> true
+</span></span><span style=display:flex><span>        ipset create chnroute_new hash:net
+</span></span><span style=display:flex><span>        <span style=color:#75715e># parse chnroute file, add to temp set</span>
+</span></span><span style=display:flex><span>        awk -F<span style=color:#ae81ff>\|</span> <span style=color:#e6db74>&#39;/CN\|ipv4/ { printf(&#34;%s/%d\n&#34;, $4, 32-log($5)/log(2)) }&#39;</span> cn.zone.raw &gt; cn.zone
+</span></span><span style=display:flex><span>        cat cn.zone | xargs -I ip ipset add chnroute_new ip
+</span></span><span style=display:flex><span>        <span style=color:#75715e># swap old and new set</span>
+</span></span><span style=display:flex><span>        ipset swap chnroute_new chnroute
+</span></span><span style=display:flex><span>        ipset destroy chnroute_new
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        echo -e <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>${</span>GREEN<span style=color:#e6db74>}</span><span style=color:#e6db74>&gt;&gt;&gt; update chnroute done!!!</span><span style=color:#e6db74>${</span>NC<span style=color:#e6db74>}</span><span style=color:#e6db74>&#34;</span>
+</span></span><span style=display:flex><span>        rm cn.zone.raw
+</span></span><span style=display:flex><span><span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>        echo <span style=color:#e6db74>&#34;download chnroute file failed!!!&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fi</span>
+</span></span></code></pre></div><p>参考链接：</p><p><a href=https://sspai.com/post/68511 title="Openwrt 作为旁路网关（不是旁路由、单臂路由）的终极设置方法，破解迷思 - 少数派 (sspai.com)" rel="noopener external nofollow noreferrer" target=_blank class=exturl>Openwrt 作为旁路网关（不是旁路由、单臂路由）的终极设置方法，破解迷思 - 少数派 (sspai.com)
+<i class="fa fa-external-link-alt"></i></a></p><p><a href=https://easonyang.com/posts/transparent-proxy-in-router-gateway/ title="旁路由的原理与配置一文通 - Eason Yang&amp;rsquo;s Blog" rel="noopener external nofollow noreferrer" target=_blank class=exturl>旁路由的原理与配置一文通 - Eason Yang&rsquo;s Blog
+<i class="fa fa-external-link-alt"></i></a></p><p><a href=https://blog.csdn.net/qq1337715208/article/details/122271608 title=关于旁路由设置后，主路由WIFI无法上网的问题_旁路由作为网关不能上网_锦夏挽秋的博客-CSDN博客 rel="noopener external nofollow noreferrer" target=_blank class=exturl>关于旁路由设置后，主路由WIFI无法上网的问题_旁路由作为网关不能上网_锦夏挽秋的博客-CSDN博客
+<i class="fa fa-external-link-alt"></i></a></p><p><a href=https://unix.stackexchange.com/questions/673573/what-exactly-happens-when-i-enable-net-ipv4-ip-forward-1 title="networking - What exactly happens when I enable net.ipv4.ip_forward=1? - Unix &amp;amp; Linux Stack Exchange" rel="noopener external nofollow noreferrer" target=_blank class=exturl>networking - What exactly happens when I enable net.ipv4.ip_forward=1? - Unix & Linux Stack Exchange
+<i class="fa fa-external-link-alt"></i></a></p><p><a href=https://www.kernel.org/doc/html/latest/networking/tproxy.html title="Transparent proxy support — The Linux Kernel documentation" rel="noopener external nofollow noreferrer" target=_blank class=exturl>Transparent proxy support — The Linux Kernel documentation
+<i class="fa fa-external-link-alt"></i></a></p><p><a href=https://pkg.go.dev/github.com/e1732a364fed/v2ray_simple/netLayer/tproxy title="tproxy package - github.com/e1732a364fed/v2ray_simple/netLayer/tproxy - Go Packages" rel="noopener external nofollow noreferrer" target=_blank class=exturl>tproxy package - github.com/e1732a364fed/v2ray_simple/netLayer/tproxy - Go Packages
+<i class="fa fa-external-link-alt"></i></a></p></div><footer class=post-footer><div class=post-tags><a href=/tags/%e6%97%81%e8%b7%af%e7%94%b1>旁路由</a>
+<a href=/tags/%e9%80%8f%e6%98%8e%e4%bb%a3%e7%90%86>透明代理</a>
+<a href=/tags/redirect>redirect</a>
+<a href=/tags/tproxy>tproxy</a></div><div class=addthis_inline_share_toolbox style=text-align:center></div><hr><div class=post-copyright><img src=/imgs/cc/cc.svg width=75 height=75 align=right alt=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong>
+透明代理的旁路由实现、原理和常见的误区</li><li class=post-copyright-author><strong>本文作者：</strong>
+Zero</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=https://izeroo.cn/post/router-transparent-proxy.html title=透明代理的旁路由实现、原理和常见的误区>https://izeroo.cn/post/router-transparent-proxy.html</a></li><li class=post-copyright-license><strong>版权声明：</strong>
+本博客所有文章除特别声明外，均采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=/post/site-migration.html rel=next title=网站迁移><i class="fa fa-chevron-left"></i> 网站迁移</a></div><div class="post-nav-prev post-nav-item"><a href=/post/hws-2023-pwn-wp.html rel=prev title="HWS 2023 第七期夏令营（硬件安全营）wp">HWS 2023 第七期夏令营（硬件安全营）wp
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div id=comments class=post-comments><div class=comment-head><div class=comment-headline><i class="fas fa-comments fa-fw"></i>
+<span>评论交流</span></div></div><div class=comment-wrap><div><div class=comment-loading><i class="fa fa-sync fa-spin"></i></div><div class=waline-container></div></div></div></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy;
+<span itemprop=copyrightYear>2021 - 2023</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=author itemprop=copyrightHolder>Zero</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.111.3 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.5.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div><div class=beian><a href=https://beian.miit.gov.cn target=_blank>鄂ICP备2021002440号-1</a>
+<img src=/imgs/gongan.png alt=鄂公网安备>
+<a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42112702000080" target=_blank>鄂公网安备 42112702000080 号</a></div></div></footer><script type=text/javascript src=https://unpkg.com/animejs@3.2.1/lib/anime.min.js defer></script>
+<script type=text/javascript src=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.js defer></script>
+<script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":false,"save":"manual"},"copybtn":true,"darkmode":true,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"https://izeroo.cn","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"fadeInLeft","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"unpkg","router":"https://unpkg.com"},"version":"4.5.3","waline":{"cfg":{"emoji":false,"imguploader":false,"pageview":"#waline-pageview-count","placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":"https://waline.izeroo.cn","sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"waline","file":"dist/waline.css","name":"@waline/client","version":"2.13.0"},"js":{"alias":"waline","file":"dist/waline.js","name":"@waline/client","version":"2.13.0"}}}</script><script type=text/javascript src=/js/main.min.172ae7dfd181813113a42cd33e0d01ee7d239870a49495e95982cc76539f01bb.js defer></script></body></html>

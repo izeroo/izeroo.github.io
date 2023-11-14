@@ -1,0 +1,303 @@
+<!doctype html><html lang=zh-cn data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width"><meta name=theme-color content="#222" media="(prefers-color-scheme: dark)"><meta name=generator content="Hugo 0.111.3"><link rel="shortcut icon" type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/x-icon href=/imgs/icons/favicon.ico><link rel=icon type=image/png sizes=16x16 href=/imgs/icons/favicon_16x16.png><link rel=icon type=image/png sizes=32x32 href=/imgs/icons/favicon_32_32.png><link rel=apple-touch-icon sizes=180x180 href=/imgs/icons/apple_touch_icont.png><meta itemprop=name content><meta itemprop=description content="..."><meta itemprop=datePublished zgotmplz><meta itemprop=dateModified zgotmplz><meta itemprop=image content="https://izeroo.cn/imgs/avatar.jpg"><meta itemprop=keywords content="Hugo"><meta property="og:type" content="article"><meta property="og:title" content="Zero's Record"><meta property="og:description" content="..."><meta property="og:image" content="/imgs/avatar.jpg"><meta property="og:image:width" content="312"><meta property="og:image:height" content="312"><meta property="og:image:type" content="image/jpeg/png/svg/jpg"><meta property="og:url" content="https://izeroo.cn/post/ptmalloc-internals/"><meta property="og:site_name" content="Zero's Record"><meta property="og:locale" content="zh-CN"><meta property="article:author" content="zero"><meta property="article:published_time" content="2022-06-24 16:54:47 +0000 +0000"><meta property="article:modified_time" content="2022-06-24 16:54:47 +0000 +0000"><link type=text/css rel=stylesheet href=https://unpkg.com/@fortawesome/fontawesome-free@6.1.2/css/all.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/animate.css@3.1.1/animate.min.css><link type=text/css rel=stylesheet href=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.css><link rel=stylesheet href=/css/main.min.fbdf2d7a7a7b64fd23bcb27e5c61762041e08c9eeb5a68d056f3b66bf87bd926.css><style type=text/css>.post-footer,.flinks-list-footer hr:after{content:"~ 我可是有底线的哟 ~"}</style><script type=text/javascript>(function(){localDB={set:function(e,t,n){if(n===0)return;const s=new Date,o=n*864e5,i={value:t,expiry:s.getTime()+o};localStorage.setItem(e,JSON.stringify(i))},get:function(e){const t=localStorage.getItem(e);if(!t)return void 0;const n=JSON.parse(t),s=new Date;return s.getTime()>n.expiry?(localStorage.removeItem(e),void 0):n.value}},theme={active:function(){const e=localDB.get("theme");if(e==null)return;theme.toggle(e),window.matchMedia("(prefers-color-scheme: dark)").addListener(function(e){theme.toggle(e.matches?"dark":"light")})},toggle:function(e){document.documentElement.setAttribute("data-theme",e),localDB.set("theme",e,2);const t=document.querySelector("iframe.giscus-frame");if(t){const n={setConfig:{theme:e}};t.contentWindow.postMessage({giscus:n},"https://giscus.app")}}},theme.active()})(window)</script><script class=next-config data-name=page type=application/json>{"comments":true,"isHome":false,"isPage":true,"path":"ptmalloc-internals","permalink":"https://izeroo.cn/post/ptmalloc-internals/","title":"","waline":{"js":[{"alias":"waline","alias_name":"@waline/client","file":"dist/pageview.js","name":"pageview","version":"2.13.0"},{"alias":"waline","alias_name":"@waline/client","file":"dist/comment.js","name":"comment","version":"2.13.0"}]}}</script><script type=text/javascript>document.addEventListener("DOMContentLoaded",()=>{var e=document.createElement("script");e.charset="UTF-8",e.src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js",e.async=!1,e.defer=!0,document.head.appendChild(e),e.onload=function(){NexT.utils.fmtBusuanzi()}})</script><title>- Zero's Record</title><noscript><link rel=stylesheet href=/css/noscript.css></noscript></head><body itemscope itemtype=http://schema.org/WebPage class=use-motion><div class=headband></div><main class=main><header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle aria-label role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><a href=/ class=brand rel=start><i class=logo-line></i><h1 class=site-title>Zero's Record</h1><i class=logo-line></i></a><p class=site-subtitle itemprop=description>记录值得记录的事情</p></div><div class=site-nav-right><div class="toggle popup-trigger"><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul class="main-menu menu"><li class="menu-item menu-item-home"><a href=/ class=hvr-icon-pulse rel=section><i class="fa fa-home hvr-icon"></i>首页</a></li><li class="menu-item menu-item-about"><a href=/about.html class=hvr-icon-pulse rel=section><i class="fa fa-user hvr-icon"></i>关于</a></li><li class="menu-item menu-item-archives"><a href=/archives/ class=hvr-icon-pulse rel=section><i class="fa fa-archive hvr-icon"></i>归档
+<span class=badge>17</span></a></li><li class="menu-item menu-item-search"><a role=button class="popup-trigger hvr-icon-pulse"><i class="fa fa-search fa-fw hvr-icon"></i>搜索</a></li></ul></nav><div class=search-pop-overlay><div class="popup search-popup"><div class=search-header><span class=search-icon><i class="fa fa-search"></i></span><div class=search-input-container><input autocomplete=off autocapitalize=off maxlength=80 placeholder=搜索... spellcheck=false type=search class=search-input></div><span class=popup-btn-close role=button><i class="fa fa-times-circle"></i></span></div><div class="search-result-container no-result"><div class=search-result-icon><i class="fa fa-spinner fa-pulse fa-5x"></i></div></div></div></div></div><div class="toggle sidebar-toggle" role=button><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div><aside class=sidebar><div class="sidebar-inner sidebar-overview-active"><ul class=sidebar-nav><li class=sidebar-nav-toc>文章目录</li><li class=sidebar-nav-overview>站点概览</li></ul><div class=sidebar-panel-container><div class="post-toc-wrap sidebar-panel"><div class="post-toc animated"><nav id=TableOfContents><ul><li><a href=#1-基础知识>1 基础知识</a><ul><li><a href=#11-linux-进程内存布局>1.1 Linux 进程内存布局</a></li><li><a href=#12-操作系统内存分配的相关函数>1.2 操作系统内存分配的相关函数</a></li></ul></li><li><a href=#2-内存管理概述>2 内存管理概述</a><ul><li><a href=#21-ptmalloc-内存管理概述>2.1 Ptmalloc 内存管理概述</a><ul><li><a href=#211-简介>2.1.1 简介</a></li><li><a href=#212-内存管理的设计假设>2.1.2 内存管理的设计假设</a></li><li><a href=#213-内存管理数据结构概述>2.1.3 内存管理数据结构概述</a></li></ul></li></ul></li><li><a href=#3-内存分配概述>3 内存分配概述</a></li><li><a href=#4-内存回收概述>4 内存回收概述</a></li><li><a href=#5-源码分析>5 源码分析</a></li></ul></nav></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author site-overview-item animated" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image alt=Zero src=/imgs/img-lazy-loading.gif data-src=/imgs/avatar.jpg><p class=site-author-name itemprop=name>Zero</p><div class=site-description itemprop=description>...</div></div><div class="site-state-wrap site-overview-item animated"><nav class=site-state><div class="site-state-item site-state-posts"><a href=/archives/><span class=site-state-item-count>17</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
+<span class=site-state-item-name>标签</span></a></div></nav></div><div class="links-of-social site-overview-item animated"><span class=links-of-social-item><a href=https://github.com/izeroo title="Github → https://github.com/izeroo" rel=noopener class=hvr-icon-pulse target=_blank><i class="fab fa-github fa-fw hvr-icon"></i>
+Github</a></span></div><div class="cc-license animated" itemprop=license><a href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh class=cc-opacity rel=noopener target=_blank title=共享知识><img src=/imgs/img-lazy-loading.gif data-src=/imgs/cc/big/by_nc_sa.svg alt=共享知识></a></div><div class="links-of-blogroll site-overview-item animated"><div class=links-of-blogroll-title><i class="fa fa-globe fa-fw"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://gitee.com/hugo-next/hugo-theme-next title=https://gitee.com/hugo-next/hugo-theme-next target=_blank>Hugo-NexT</a></li><li class=links-of-blogroll-item><a href=https://lisenhui.cn title=https://lisenhui.cn target=_blank>凡梦星尘空间站</a></li><li class=links-of-blogroll-item><a href=https://lemono.fun title=https://lemono.fun target=_blank>Lemono</a></li><li class=links-of-blogroll-item><a href=http://yuno0n.top title=http://yuno0n.top target=_blank>Yunoon</a></li><li class=links-of-blogroll-item><a href=https://momoe.ml title=https://momoe.ml target=_blank>Zy143L</a></li><li class=links-of-blogroll-item><a href=https://9bingyin.com title=https://9bingyin.com target=_blank>Bingyin</a></li><li class=links-of-blogroll-item><a href=https://www.tangrr.top title=https://www.tangrr.top target=_blank>皮皮</a></li></ul></div></div></div></div><div id=siteinfo-card-widget class=sidebar-card-widget><div class=item-headline><i class="fas fa-chart-line"></i>
+<span>网站资讯</span></div><div class=siteinfo><div class=siteinfo-item><div class=item-name><i class="fa-solid fa-calendar-check"></i>已运行：</div><div class=item-count id=runTimes data-publishdate=2018-08-27T17:32:11+08:00></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-user"></i>总访客数：</div><div class=item-count id=busuanzi_value_site_uv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fas fa fa-eye"></i>页面浏览：</div><div class=item-count id=busuanzi_value_site_pv><i class="fa fa-sync fa-spin"></i></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-font"></i>总字数：</div><div class=item-count id=wordsCount data-count=40359></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-mug-hot"></i>阅读约：</div><div class=item-count id=readTimes data-times=91></div></div><div class=siteinfo-item><div class=item-name><i class="fa fa-clock-rotate-left"></i>最后更新于：</div><div class=item-count id=last-push-date data-lastpushdate=2023-11-14T22:56:00+00:00></div></div></div></div></aside><div class=sidebar-dimmer></div></header><div class=tool-buttons><div id=goto-comments class="button goto-comments" title=直达评论><i class="fas fa-comments"></i></div><div id=toggle-theme class=button title=深浅模式切换><i class="fas fa-adjust"></i></div><div class=back-to-top role=button title=返回顶部><i class="fa fa-arrow-up"></i>
+<span>0%</span></div></div><div class=reading-progress-bar></div><noscript><div class=noscript-warning>Theme NexT works best with JavaScript enabled</div></noscript><div class="main-inner post posts-expand"><div class=post-block><article itemscope itemtype=http://schema.org/Article class=post-content lang><link itemprop=mainEntityOfPage href=https://izeroo.cn/post/ptmalloc-internals/><span hidden itemprop=author itemscope itemtype=http://schema.org/Person><meta itemprop=image content="/imgs/avatar.jpg"><meta itemprop=name content="zero"></span><span hidden itemprop=publisher itemscope itemtype=http://schema.org/Organization><meta itemprop=name content="Zero"><meta itemprop=description content="..."></span><span hidden itemprop=post itemscope itemtype=http://schema.org/CreativeWork><meta itemprop=name content><meta itemprop=description content="glibc内存管理ptmalloc源代码分析读书笔记 1 基础知识 1.1 Linux 进程内存布局 Linux 系统加载ELF文件时，会调用Loader将ELF文件中的各个"></span><header class=post-header><h1 class=post-title itemprop="name headline"></h1><div class=post-meta-container><div class=post-meta-items><span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-calendar"></i></span>
+<span class=post-meta-item-text title=发表于>发表于：</span>
+<time title="创建时间：2022-06-24 16:54:47 +0000 +0000" itemprop="dateCreated datePublished" datetime="2022-06-24 16:54:47 +0000 +0000">2022-06-24</time></span>
+<span class=post-meta-item><span class=post-meta-item-icon><i class="far fa-folder-open"></i></span>
+<span class=post-meta-item-text title=分类于>分类于：</span>
+<span itemprop=about itemscope itemtype=http://schema.org/Thing><a href=/categories/%E6%8A%80%E6%9C%AF itemprop=url rel=index><span itemprop=name>技术</span></a></span></span></div><div class=post-meta-items><span class=post-meta-item title=字数><span class=post-meta-item-icon><i class="far fa-file-word"></i></span>
+<span class=post-meta-item-text>字数：</span>
+<span>11526</span></span>
+<span class=post-meta-item title=阅读><span class=post-meta-item-icon><i class="far fa-clock"></i></span>
+<span class=post-meta-item-text>阅读：&ap;</span>
+<span>24分钟</span></span>
+<span class=post-meta-item title=浏览><span class=post-meta-item-icon><i class="far fa-eye"></i></span>
+<span class=post-meta-item-text>浏览：</span>
+<span id=busuanzi_value_page_pv data-path=/post/ptmalloc-internals/><i class="fa fa-sync fa-spin"></i></span></span>
+<span class=post-meta-item title><span class=post-meta-item-icon><i class="far fa-comments"></i></span>
+<span class=post-meta-item-text title=评论>评论：</span>
+<span id=comments-count class=waline-comment-count data-path=/post/ptmalloc-internals/><i class="fa fa-sync fa-spin"></i></span></span></div></div></header><div class=post-body itemprop=articleBody><h1 id=glibc内存管理ptmalloc源代码分析读书笔记>glibc内存管理ptmalloc源代码分析读书笔记
+<a class=header-anchor href=#glibc%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86ptmalloc%e6%ba%90%e4%bb%a3%e7%a0%81%e5%88%86%e6%9e%90%e8%af%bb%e4%b9%a6%e7%ac%94%e8%ae%b0></a></h1><h2 id=1-基础知识>1 基础知识
+<a class=header-anchor href=#1-%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86></a></h2><h3 id=11-linux-进程内存布局>1.1 Linux 进程内存布局
+<a class=header-anchor href=#11-linux-%e8%bf%9b%e7%a8%8b%e5%86%85%e5%ad%98%e5%b8%83%e5%b1%80></a></h3><p>Linux 系统加载ELF文件时，会调用Loader将ELF文件中的各个段一次载入到某一地址开始的空间中。</p><p>首先被载入的是.text 段（代码段），然后是.data段，最后是.bss段。</p><p>以32位系统为例，.text 段会被加载到0x804800，即128M处。程序能访问的最大的地址为 0xBFFFFFFF，也就是到3G地址处，3G以上的1G空间是内核使用的，应用程序不可以直接访问。</p><p>.bss段至栈之间的内存是空闲的，被分为heap区域和mmap映射区域。</p><p>Heap 和 mmap 区域都可以供用户自由使用，但是它在一开始并没有映射到相应的物理地址，是不可访问的。在向内核请求分配该空间之前，对这个空间的访问会导致segmentation fault。</p><p>用户程序可以直接使用系统调用来管理 heap 和 mmap 映射区域，但更多的时候程序都是使用 C 语言提供的 malloc()和 free()函数来动态的分配和释放内存。Stack区域是唯一不需要映射，用户却可以访问的内存区域，这也是利用堆栈溢出进行攻击的基础。</p><ul><li><p>x86 32位平台下 Linux 经典进程内存布局</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230522213027107.png alt=image-20230522213027107></p><p>上图是 Linux 2.6.7 以前的默认进程内存布局形式，mmap 区域与栈区域相对增长，这意味着堆只有 1GB 的虚拟地址空间可以使用，继续增长就会进入 mmap 映射区域。</p><p>这是由于 32 模式地址空间限制造成的，所以内核引入了另一种虚拟地址空间的布局形式，将在后面介绍。但对于 64 位系统，提供了巨大的虚拟地址空间，
+这种布局就相当好。</p></li><li><p>X86 32位平台下 Linux默认进程内存布局</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230522213252868.png alt=image-20230522213252868></p><p>这是Linux 2.6.7之后引入的内存布局，区别与前一幅图的是mmap区域向下扩展不再受到0x40000000的限制，而是和heap区域相对扩展，直到耗尽为止。</p></li><li><p>X86 64位平台下 Linux 进程内存布局（未开启PIE）</p><p>64位模式下类似32位模式的经典布局，text段 的起始地址为 0x0000000000400000（开启PIE时起始地址为0x555555554000），heap紧接着 BSS 段向上增长，mmap 映射区域开始位置一般设为 TASK_SIZE/3。</p><p>TASK_SIZE的宏定义：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>#define TASK_SIZE_MAX
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>((<span style=color:#ae81ff>1UL</span> <span style=color:#f92672>&lt;&lt;</span> <span style=color:#ae81ff>47</span>) <span style=color:#f92672>-</span> PAGE_SIZE)
+</span></span><span style=display:flex><span><span style=color:#75715e>#define TASK_SIZE
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>(<span style=color:#a6e22e>test_thread_flag</span>(TIF_IA32) <span style=color:#f92672>?</span> \
+</span></span><span style=display:flex><span>IA32_PAGE_OFFSET : TASK_SIZE_MAX)
+</span></span><span style=display:flex><span><span style=color:#75715e>#define STACK_TOP TASK_SIZE
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define TASK_UNMAPPED_BASE (PAGE_ALIGN(TASK_SIZE / 3))
+</span></span></span></code></pre></div><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230522214531193.png alt=image-20230522214531193></p><p>进程的栈和 mmap 映射区域并不是从一个固定地址开始，并且每次启动时的值都不一样，这是程序在启动时随机改变这些值的设置，使得使用缓冲区溢出进行攻击更加困难。</p><p>当然也可以让进程的栈和 mmap 映射区域从一个固定位置开始，只需要设置全局变量
+randomize_va_space值 为0 ， 这 个 变 量 默 认 值 为1 。</p><p>用 户 可 以 通 过 设 置/proc/sys/kernel/randomize_va_space 来停用该特性，也可以用如下命令：
+sudo sysctl -w kernel.randomize_va_space=0</p></li><li><p>X86 64位平台下 Linux 进程内存布局（开启PIE）</p><p>未开启PIE时的内存布局：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230522220231517.png alt></p><p>开启PIE时的内存布局：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230522220331946.png alt=image-20230522220331946></p><p>对比上面两张图片，可以看到开启PIE时text段和heap区域的起始地址均发生了变化。</p><p>各个段的说明（
+<a href=https://blog.arg.pub/2022/10/05/os/%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f%e7%9a%84%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86/ title="深入浅出 OS 的内存管理 | 阿日哥的向量空间 (arg.pub)" rel="noopener external nofollow noreferrer" target=_blank class=exturl>深入浅出 OS 的内存管理 | 阿日哥的向量空间 (arg.pub)
+<i class="fa fa-external-link-alt"></i>
+</a>）：</p><ul><li><strong>保留区</strong>：位于虚拟地址空间的最底部，未赋予物理地址。任何对它的引用都是非法的，程序中的空指针（NULL）指向的就是这块内存地址。</li><li><strong>.text 段</strong>：代码段也称正文段或文本段，用于存放程序的执行代码 (即 CPU 执行的机器指令），代码段一般情况下是只读的，这是对执行代码的一种保护机制。</li><li><strong>.data 段</strong>：数据段通常用于存放程序中已初始化且初值不为 0 的全局变量和静态变量。数 据段属于静态内存分配 (静态存储区)，可读可写。</li><li>.<strong>bss 段</strong>：未初始化以及初始为 0 的全局变量和静态变量，操作系统会将这些未初始化的变量初始化为 0。</li><li><strong>堆（heap）</strong>：用于存放进程运行时动态分配的内存。</li><li><ul><li>堆中内容是匿名的，不能按名字直接访问，只能通过指针间接访问。</li><li>堆向高地址扩展（即 “向上生长”），是不连续的内存区域。这是由于系统用链表来存储空闲 内存地址，自然不连续，而链表从低地址向高地址遍历。</li></ul></li><li><strong>内存映射区（mmap）</strong>：作为内存映射区加载磁盘文件，或者加载程序运作过程中需要调 用的动态库。</li><li><strong>栈（stack）</strong>：存储函数内部声明的非静态局部变量，函数参数，函数返回地址等信息，栈内存由编译器自动分配释放。栈和堆相向而生，地址” 向下生长”，分配的内存是连续的。</li></ul></li></ul><h3 id=12-操作系统内存分配的相关函数>1.2 操作系统内存分配的相关函数
+<a class=header-anchor href=#12-%e6%93%8d%e4%bd%9c%e7%b3%bb%e7%bb%9f%e5%86%85%e5%ad%98%e5%88%86%e9%85%8d%e7%9a%84%e7%9b%b8%e5%85%b3%e5%87%bd%e6%95%b0></a></h3><p>堆区域和mmap区域都是可以提供给用户程序使用的虚拟内存空间，对于堆空间的操作，由
+<a href=https://izeroo.cn/post/csapp-malloc-lab.html#sbrk title=sbrk()函数 rel="noopener external nofollow noreferrer" target=_blank class=exturl>sbrk()函数
+<i class="fa fa-external-link-alt"></i>
+</a>进行，对于mmap区域的操作，由 mmap()和munmap()函数进行。</p><h2 id=2-内存管理概述>2 内存管理概述
+<a class=header-anchor href=#2-%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86%e6%a6%82%e8%bf%b0></a></h2><p>主流的内存管理方式由以下几种：</p><ul><li>C 风格的内存管理程序</li><li>池式内存管理</li><li>引用计数</li><li>垃圾收集</li></ul><h3 id=21-ptmalloc-内存管理概述>2.1 Ptmalloc 内存管理概述
+<a class=header-anchor href=#21-ptmalloc-%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86%e6%a6%82%e8%bf%b0></a></h3><h4 id=211-简介>2.1.1 简介
+<a class=header-anchor href=#211-%e7%ae%80%e4%bb%8b></a></h4><p>Linux 中 malloc 的早期版本是由 Doug Lea 实现的，它有一个重要问题就是在并行处理时多个线程共享进程的内存空间，各线程可能并发请求内存，在这种情况下应该如何保证分配</p><p>和回收的正确和高效。Wolfram Gloger 在 Doug Lea 的基础上改进使得 Glibc 的 malloc 可以支持多线程——ptmalloc，在glibc-2.3.x.中已经集成了ptmalloc2，这就是我们平时使用的malloc，目前 ptmalloc 的最新版本 ptmalloc3。ptmalloc2 的性能略微比 ptmalloc3 要高一点点。</p><h4 id=212-内存管理的设计假设>2.1.2 内存管理的设计假设
+<a class=header-anchor href=#212-%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86%e7%9a%84%e8%ae%be%e8%ae%a1%e5%81%87%e8%ae%be></a></h4><p>Ptmalloc 在设计时折中了高效率，高空间利用率，高可用性等设计目标。在其实现代码
+中，隐藏着内存管理中的一些设计假设，由于某些设计假设，导致了在某些情况下 ptmalloc
+的行为很诡异。这些设计假设包括：</p><p>Ptmalloc 在设计时折中了高效率，高空间利用率，高可用性等设计目标。在其实现代码
+中，隐藏着内存管理中的一些设计假设，由于某些设计假设，导致了在某些情况下 ptmalloc
+的行为很诡异。这些设计假设包括：</p><ol><li>具有长生命周期的大内存分配使用 mmap。</li><li>特别大的内存分配总是使用 mmap。</li><li>具有短生命周期的内存分配使用 brk，因为用 mmap 映射匿名页，当发生缺页异常时，linux 内核为缺页分配一个新物理页，并将该物理页清 0，一个 mmap 的内存块需要映射多个物理页，导致多次清 0 操作，很浪费系统资源，所以引入了 mmap分配阈值动态调整机制，保证在必要的情况下才使用 mmap 分配内存。</li><li>尽量只缓存临时使用的空闲小内存块，对大内存块或是长生命周期的大内存块在释放时都直接归还给操作系统。</li><li>对空闲的小内存块只会在 malloc 和 free 的时候进行合并，free 时空闲内存块可能放入 pool 中，不一定归还给操作系统。</li><li>收缩堆的条件是当前 free 的块大小加上前后能合并 chunk 的大小大于 64KB、，并且堆顶的大小达到阈值，才有可能收缩堆，把堆最顶端的空闲内存返回给操作系统。</li><li>需要保持长期存储的程序不适合用 ptmalloc 来管理内存。</li><li>为了支持多线程，多个线程可以从同一个分配区（arena）中分配内存，ptmalloc假设线程 A 释放掉一块内存后，线程 B 会申请类似大小的内存，但是 A 释放的内存跟 B 需要的内存不一定完全相等，可能有一个小的误差，就需要不停地对内存块作切割和合并，这个过程中可能产生内存碎片。</li></ol><h4 id=213-内存管理数据结构概述>2.1.3 内存管理数据结构概述
+<a class=header-anchor href=#213-%e5%86%85%e5%ad%98%e7%ae%a1%e7%90%86%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e6%a6%82%e8%bf%b0></a></h4><h5 id=2131-main_arena-与-non_main_arena>2.1.3.1 main_arena 与 non_main_arena
+<a class=header-anchor href=#2131-main_arena-%e4%b8%8e-non_main_arena></a></h5><p>在 Doug Lea 实现的内存分配器中只有一个主分配区（main arena），每次分配内存都必须对主分配区加锁，分配完成后释放锁，在 SMP 多线程环境下，对主分配区的锁的争用很激烈，严重影响了 malloc 的分配效率。于是 Wolfram Gloger 在 Doug Lea 的基础上改进使得Glibc 的 malloc 可以支持多线程，增加了非主分配区（non main arena）支持，主分配区与非主分配区用环形链表进行管理。每一个分配区利用互斥锁（mutex）使线程对于该分配区的访问互斥。</p><p>每个进程只有一个主分配区，但可能存在多个非主分配区，ptmalloc 根据系统对分配区的争用情况动态增加非主分配区的数量，分配区的数量一旦增加，就不会再减少了。主分配区可以访问进程的 heap 区域和 mmap 映射区域，也就是说主分配区可以使用 sbrk 和 mmap向操作系统申请虚拟内存。而非主分配区只能访问进程的 mmap 映射区域，非主分配区每次使用 mmap()向操作系统“批发”HEAP_MAX_SIZE（32 位系统上默认为 1MB，64 位系统默认为 64MB）大小的虚拟内存，当用户向非主分配区请求分配内存时再切割成小块“零售”出去，毕竟系统调用是相对低效的，直接从用户空间分配内存快多了。所以 ptmalloc 在必要的情况下才会调用 mmap()函数向操作系统申请虚拟内存。</p><p>主分配区可以访问 heap 区域，如果用户不调用 brk()或是 sbrk()函数，分配程序就可以保证分配到连续的虚拟地址空间，因为每个进程只有一个主分配区使用 sbrk()分配 heap 区域的虚拟内存。内核对 brk 的实现可以看着是 mmap 的一个精简版，相对高效一些。如果主分配区的内存是通过 mmap()向系统分配的，当 free 该内存时，主分配区会直接调用 munmap()将该内存归还给系统。</p><p>当某一线程需要调用 malloc()分配内存空间时，该线程先查看线程私有变量中是否已经存在一个分配区，如果存在，尝试对该分配区加锁，如果加锁成功，使用该分配区分配内存，如果失败，该线程搜索循环链表试图获得一个没有加锁的分配区。如果所有的分配区都已经加锁，那么 malloc()会开辟一个新的分配区，把该分配区加入到全局分配区循环链表并加锁，然后使用该分配区进行分配内存操作。在释放操作中，线程同样试图获得待释放内存块所在分配区的锁，如果该分配区正在被别的线程使用，则需要等待直到其他线程释放该分配区的互斥锁之后才可以进行释放操作。</p><h5 id=2132-chunk-的组织>2.1.3.2 chunk 的组织
+<a class=header-anchor href=#2132-chunk-%e7%9a%84%e7%bb%84%e7%bb%87></a></h5><p>通过malloc()函数申请的内存空间需要一定的数据结构来保存其信息，即chunk。</p><ol><li><p>chunk的格式</p><p>free chunk的状态如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>/*    
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Free chunks are stored in circular doubly-linked lists, and look like this:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Size of previous chunk, if unallocated (P clear)  |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    `head:&#39; |             Size of chunk, in bytes                     |A|0|P|
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Forward pointer to next chunk in list             |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Back pointer to previous chunk in list            |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Unused space (may be 0 bytes long)                .
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            .                                                               .
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            .                                                               |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    `foot:&#39; |             Size of chunk, in bytes                           |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Size of next chunk, in bytes                |A|0|0|
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    The P (PREV_INUSE) bit, stored in the unused low-order bit of the
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    chunk size (which is always a multiple of two words), is an in-use
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    bit for the *previous* chunk.  If that bit is *clear*, then the
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    word before the current chunk size contains the previous chunk
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    size, and can be used to find the front of the previous chunk.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    The very first chunk allocated always has this bit set,
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    preventing access to non-existent (or non-owned) memory. If
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    prev_inuse is set for any given chunk, then you CANNOT determine
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    the size of the previous chunk, and might even get a memory
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    addressing fault when trying to do so.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    The A (NON_MAIN_ARENA) bit is cleared for chunks on the initial,
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    main arena, described by the main_arena variable.  When additional
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    threads are spawned, each thread receives its own arena (up to a
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    configurable limit, after which arenas are reused for multiple
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    threads), and the chunks in these arenas have the A bit set.  To
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    find the arena for a chunk on such a non-main arena, heap_for_ptr
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    performs a bit mask operation and indirection through the ar_ptr
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    member of the per-heap header heap_info (see arena.c).
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Note that the `foot&#39; of the current chunk is actually represented
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    as the prev_size of the NEXT chunk. This makes it easier to
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    deal with alignments etc but can be very confusing when trying
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    to extend or adapt this code.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    The three exceptions to all this are:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     1. The special chunk `top&#39; doesn&#39;t bother using the
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        trailing size field since there is no next contiguous chunk
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        that would have to index off it. After initialization, `top&#39;
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        is forced to always exist.  If it would become less than
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        MINSIZE bytes long, it is replenished.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     2. Chunks allocated via mmap, which have the second-lowest-order
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        bit M (IS_MMAPPED) set in their size fields.  Because they are
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        allocated one-by-one, each must contain its own trailing size
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        field.  If the M bit is set, the other bits are ignored
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        (because mmapped chunks are neither in an arena, nor adjacent
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        to a freed chunk).  The M bit is also used for chunks which
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        originally came from a dumped heap via malloc_set_state in
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        hooks.c.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>     3. Chunks in fastbins are treated as allocated chunks from the
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        point of view of the chunk allocator.  They are consolidated
+</span></span></span><span style=display:flex><span><span style=color:#75715e>        with their neighbors only in bulk, in malloc_consolidate.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>*/</span>
+</span></span></code></pre></div><p>未被free的chunk（allocated chunk/malloced chunk）的格式如下：</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>An allocated chunk looks like this:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Size of previous chunk, if unallocated (P clear)  |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Size of chunk, in bytes                     |A|M|P|
+</span></span></span><span style=display:flex><span><span style=color:#75715e>      mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             User data starts here...                          .
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            .                                                               .
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            .             (malloc_usable_size() bytes)                      .
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            .                                                               |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             (size of chunk, but used for application data)    |
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            |             Size of next chunk, in bytes                |A|0|1|
+</span></span></span><span style=display:flex><span><span style=color:#75715e>            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Where &#34;chunk&#34; is the front of the chunk for the purpose of most of
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    the malloc code, but &#34;mem&#34; is the pointer that is returned to the
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    user.  &#34;Nextchunk&#34; is the beginning of the next contiguous chunk.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Chunks always begin on even word boundaries, so the mem portion
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    (which is returned to the user) is also on an even word boundary, and
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    thus at least double-word aligned.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>*/</span>
+</span></span></code></pre></div><p>chunk中除供用户使用的内存区域（mem）外，还有一些辅助信息。</p><p>在chunk的头部保存着前一个chunk和当前chunk的大小信息，因此chunk的大小有最小值，至少需要这两个字段的大小（size_t）之和的空间。</p><p>另外由于内存对齐的缘故，32位下malloc的返回地址需要8字节对齐（long long长度为8字节）。</p><p>综上，chunk的大小为8的倍数，因此我们可以用size of chunk的低3位保存其他信息。即chunk的分配状态<code>A</code>、是否为mmap的chunk <code>M</code>以及前一个chunk的分配状态<code>P</code>。</p><p>此外，top chunk不会用到其下一个chunk的prev_size字段，因为它没有下一个chunk。</p><p>需要注意，堆是从低地址向高地址增长的，我们说的<code>前一个/上一个</code>是指较低地址处的chunk，<code>后一个/下一个</code>是指较高地址处的chunk。</p></li><li><p>chunk的空间复用</p><p>对于allocated chunk而言，他的<code>下一个</code>chunk的prev_size字段是没有意义的，该字段的空间会被allocated chunk供用户保存数据使用。</p><p>这是因为glibc使用了边界标记法（
+<a href=https://izeroo.cn/post/csapp-malloc-lab.html#%e5%a6%82%e4%bd%95%e4%bf%9d%e5%ad%98%e5%86%85%e5%ad%98%e5%9d%97%e7%9a%84%e4%bf%a1%e6%81%af title="CSAPP Malloc Lab#如何保存内存块的信息" rel="noopener external nofollow noreferrer" target=_blank class=exturl>CSAPP Malloc Lab#如何保存内存块的信息
+<i class="fa fa-external-link-alt"></i>
+</a>）。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-C data-lang=C><span style=display:flex><span><span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>malloc_chunk details:
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    (The following includes lightly edited explanations by Colin Plumb.)
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Chunks of memory are maintained using a `boundary tag&#39; method as
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    described in e.g., Knuth or Standish.  (See the paper by Paul
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    Wilson ftp://ftp.cs.utexas.edu/pub/garbage/allocsrv.ps for a
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    survey of such techniques.)  Sizes of free chunks are stored both
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    in the front of each chunk and at the end.  This makes
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    consolidating fragmented chunks into bigger chunks very fast.  The
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    size fields also hold bits representing whether chunks are free or
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    in use.
+</span></span></span><span style=display:flex><span><span style=color:#75715e>*/</span>
+</span></span></code></pre></div><p>不过与传统的边界标记法不同，其不是在chunk尾部保存当前chunk的大小，而是在chunk的头部保存前一个chunk的大小，两种方法都可以快速地帮助我们定位到前一个chunk。</p><p>借用CSAPP中的图片来进行说明，chunk的结构如下图：</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230527224607606.png alt=image-20230527224607606></p><p>与glibc的实现稍有不同，这里的chunk的a表示的是当前chunk的分配情况，没有prev_inuse位，这样我们在向前合并时就必须借助前一个chunk块的脚部来定位到前一个chunk，从而判断其是否正在被使用。这样脚部在正在被使用的chunk中也必须存在，否则我们无法正常向前合并。</p><p>glibc添加了prev_inuse位，这样我们直接通过prev_inuse位即可判断前一个堆块是否空闲，如果不是空闲堆块，我们不需要定位到那个堆块来进行合并，这样非空闲块脚部的空间就可以给用户使用了。</p><p>剩下唯一的区别就是glibc把脚部放在了开始，而且其保存的是上一个chunk的大小，其实实际上是没有什么区别的，如果上一个chunk正在使用中，那么我们也不需要关心当前chunk的prev size字段，可以将其借给上一个chunk来当作用户空间来使用。</p></li></ol><h5 id=2133-free-chunk的容器>2.1.3.3 free chunk的容器
+<a class=header-anchor href=#2133-free-chunk%e7%9a%84%e5%ae%b9%e5%99%a8></a></h5><p>用户通过free()释放的内存并不会马上归还给操作系统，实际上也可能无法归还：我们通过sbrk()来增大堆的大小，其中不仅有free chunk，还有allocated chunk，如果我们要收缩堆，那么我们必须处理其中的allocated chunk。</p><p>ptmalloc 会统一管理 heap 和 mmap 映射区域中的 chunk，当用户进行下一次分配请求时，ptmalloc 会首先试图在空闲的chunk 中挑选一块给用户，这样就避免了频繁的系统调用，降低了内存分配的开销。ptmalloc将相似大小的 chunk 用双向链表链接起来，这样的一个链表被称为一个 bin。</p><p>ptmalloc 一共维护了 128 个 bin，并使用一个数组来存储这些 bin，如下图。</p><p><img src=/imgs/img-lazy-loading.gif data-src=image-20230528230019863.png alt=image-20230528230019863></p><p>数组中的第一个为 unsorted bin，数组中从 2 开始编号的前 64 个 bin 称为 small bins，同一个small bin中的chunk具有相同的大小。两个相邻的small bin中的chunk大小相差8bytes。small bins 中的 chunk 按照最近使用顺序进行排列，最后释放的 chunk 被链接到链表的头部，而申请 chunk 是从链表尾部开始，这样，每一个 chunk 都有相同的机会被 ptmalloc 选中。</p><p>Small bins 后面的 bin 被称作 large bins。large bins 中的每一个 bin 分别包含了一个给定范围内的 chunk，其中的 chunk 按大小序排列。相同大小的 chunk 同样按照最近使用顺序排列。ptmalloc 使用“smallest-first，best-fit”原则在空闲 large bins 中查找合适的 chunk。</p><p>当空闲的 chunk 被链接到 bin 中的时候，ptmalloc 会把表示该 chunk 是否处于使用中的标志 P 设为 0（注意，这个标志实际上处在下一个 chunk 中），同时 ptmalloc 还会检查它前后的 chunk 是否也是空闲的，如果是的话，ptmalloc 会首先把它们合并为一个大的 chunk，然后将合并后的 chunk 放到 unstored bin 中。要注意的是，并不是所有的 chunk 被释放后就立即被放到 bin 中。ptmalloc 为了提高分配的速度，会把一些小的的 chunk 先放到一个叫做fast bins 的容器内。</p><h6 id=fast-bins>fast bins
+<a class=header-anchor href=#fast-bins></a></h6><p>fast bin的存在是为了解决频繁申请和释放较小的内存块时需要频繁切割和合并大的chunk的问题。</p><p>不大于MAX_FAST（64 Bytes）的内存块被释放后首先会被放到fast bins中，fast bins中的chunk的使用标志P不会被改变，这样fast bins中的chunks就不会被合并。</p><p>当为用户分配的chunk大小小于或等于MAX_FAST时，ptmalloc就会先在fast bins中查找相应的空闲块，然后才会去其他bins中查找。</p><p>在某些情况下，ptmalloc会遍历fast bins，将相邻的空闲chunk合并，并将合并后的chunk加入到unsorted bin中，然后在放入相应的bin中。</p><h6 id=unsorted-bin>unsorted bin
+<a class=header-anchor href=#unsorted-bin></a></h6><p>unsorted bin 的队列使用 bins 数组的第一个，如果被用户释放的 chunk 大于 MAX_FAST，或者 fast bins 中的空闲 chunk 合并后，这些 chunk 首先会被放到 unsorted bin 队列中，在进行 malloc 操作的时候，如果在 fast bins 中没有找到合适的 chunk，则 ptmalloc 会先在 unsortedbin 中查找合适的空闲 chunk，然后才查找 bins。如果 unsorted bin 不能满足分配要求。malloc便会将 unsorted bin 中的 chunk 加入 bins 中。然后再从 bins 中继续进行查找和分配过程。从
+这个过程可以看出来，unsorted bin 可以看做是 bins 的一个缓冲区，增加它只是为了加快分配的速度。</p><h6 id=top-chunk>top chunk
+<a class=header-anchor href=#top-chunk></a></h6><p>并不是所有的chunk都按照上面的方式组织。它们分别是top chunk、mmaped chunk和last remainder chunk。而top chunk 对于主分配区和非主分配区又是不一样的。</p><p>对于非主分配区会预先从 mmap 区域分配一块较大的空闲内存模拟 sub-heap，通过管理 sub-heap 来响应用户的需求，因为内存是按地址从低向高进行分配的，在空闲内存的最高处，必然存在着一块空闲 chunk，叫做 top chunk。当 bins 和 fast bins 都不能满足分配需要的时候，ptmalloc 会设法在 top chunk 中分出一块内存给用户，如果 top chunk 本身不够大，分配程序会重新分配一个 sub-heap，并将 top chunk 迁移到新的 sub-heap 上，新的 sub-heap与已有的 sub-heap 用单向链表连接起来，然后在新的 top chunk 上分配所需的内存以满足分配的需要，实际上，top chunk 在分配时总是在 fast bins 和 bins 之后被考虑，所以，不论 topchunk 有多大，它都不会被放到 fast bins 或者是 bins 中。Top chunk 的大小是随着分配和回收不停变换的，如果从 top chunk 分配内存会导致 top chunk 减小，如果回收的 chunk 恰好与 top chunk 相邻，那么这两个 chunk 就会合并成新的 top chunk，从而使 top chunk 变大。如果在 free 时回收的内存大于某个阈值，并且 top chunk 的大小也超过了收缩阈值，ptmalloc会收缩 sub-heap，如果 top-chunk 包含了整个 sub-heap，ptmalloc 会调用 munmap 把整个
+sub-heap 的内存返回给操作系统。</p><p>由于主分配区是唯一能够映射进程 heap 区域的分配区，它可以通过 sbrk()来增大或是收缩进程 heap 的大小，ptmalloc 在开始时会预先分配一块较大的空闲内存（也就是所谓的 heap），主分配区的 top chunk 在第一次调用 malloc 时会分配一块(chunk_size + 128KB)align 4KB 大小的空间作为初始的 heap，用户从 top chunk 分配内存时，可以直接取出一块内存给用户。在回收内存时，回收的内存恰好与 top chunk 相邻则合并成新的 top chunk，当该次回收的空闲内存大小达到某个阈值，并且 top chunk 的大小也超过了收缩阈值，会执行内存收缩，减小 top chunk 的大小，但至少要保留一个页大小的空闲内存，从而把内存归还给操作系统。如果向主分配区的 top chunk 申请内存，而 top chunk 中没有空闲内存，ptmalloc会调用 sbrk()将的进程 heap 的边界 brk 上移，然后修改 top chunk 的大小。</p><h6 id=mmaped-chunk>mmaped chunk
+<a class=header-anchor href=#mmaped-chunk></a></h6><p>当需要分配的 chunk 足够大，而且 fast bins 和 bins 都不能满足要求，甚至 top chunk 本身也不能满足分配需求时，ptmalloc 会使用 mmap 来直接使用内存映射来将页映射到进程空间。这样分配的 chunk 在被 free 时将直接解除映射，于是就将内存归还给了操作系统，再次对这样的内存区的引用将导致 segmentation fault 错误。这样的 chunk 也不会包含在任何bin 中。</p><h6 id=last-remainder-chunk>Last remainder chunk
+<a class=header-anchor href=#last-remainder-chunk></a></h6><p>Last remainder 是另外一种特殊的 chunk，就像 top chunk 和 mmaped chunk 一样，不会在任何 bins 中找到这种 chunk。当需要分配一个 small chunk，但在 small bins 中找不到合适的 chunk，如果 last remainder chunk 的大小大于所需的 small chunk 大小，last remainder chunk被分裂成两个 chunk，其中一个 chunk 返回给用户，另一个 chunk 变成新的 last remainder chuk。</p><h2 id=3-内存分配概述>3 内存分配概述
+<a class=header-anchor href=#3-%e5%86%85%e5%ad%98%e5%88%86%e9%85%8d%e6%a6%82%e8%bf%b0></a></h2><ol><li>分配算法概述，以 32 系统为例，64 位系统类似。
+
+小于等于 64 字节：用 pool 算法分配。
+
+64 到 512 字节之间：在最佳匹配算法分配和 pool 算法分配中取一种合适的。
+
+大于等于 512 字节：用最佳匹配算法分配。
+
+大于等于 mmap 分配阈值（默认值 128KB）：根据设置的 mmap 的分配策略进行分配，
+如果没有开启 mmap 分配阈值的动态调整机制，大于等于 128KB 就直接调用 mmap
+20
+分配。否则，大于等于 mmap 分配阈值时才直接调用 mmap()分配。</li><li>ptmalloc 的响应用户内存分配要求的具体步骤为:
+1)
+获取分配区的锁，为了防止多个线程同时访问同一个分配区，在进行分配之前需要
+取得分配区域的锁。线程先查看线程私有实例中是否已经存在一个分配区，如果存
+在尝试对该分配区加锁，如果加锁成功，使用该分配区分配内存，否则，该线程搜
+索分配区循环链表试图获得一个空闲（没有加锁）的分配区。如果所有的分配区都
+已经加锁，那么 ptmalloc 会开辟一个新的分配区，把该分配区加入到全局分配区循
+环链表和线程的私有实例中并加锁，然后使用该分配区进行分配操作。开辟出来的
+新分配区一定为非主分配区，因为主分配区是从父进程那里继承来的。开辟非主分
+配区时会调用 mmap()创建一个 sub-heap，并设置好 top chunk。
+2)
+将用户的请求大小转换为实际需要分配的 chunk 空间大小。
+3)
+判断所需分配chunk 的大小是否满足chunk_size &lt;= max_fast (max_fast 默认为 64B)，
+如果是的话，则转下一步，否则跳到第 5 步。
+4)
+首先尝试在 fast bins 中取一个所需大小的 chunk 分配给用户。如果可以找到，则分
+配结束。否则转到下一步。
+5)
+判断所需大小是否处在 small bins 中，即判断 chunk_size &lt; 512B 是否成立。如果
+chunk 大小处在 small bins 中，则转下一步，否则转到第 6 步。
+6)
+根据所需分配的 chunk 的大小，找到具体所在的某个 small bin，从该 bin 的尾部摘
+取一个恰好满足大小的 chunk。若成功，则分配结束，否则，转到下一步。
+7)
+到了这一步，说明需要分配的是一块大的内存，或者 small bins 中找不到合适的
+chunk。于是，ptmalloc 首先会遍历 fast bins 中的 chunk，将相邻的 chunk 进行合并，
+并链接到 unsorted bin 中，然后遍历 unsorted bin 中的 chunk，如果 unsorted bin 只
+有一个 chunk，并且这个 chunk 在上次分配时被使用过，并且所需分配的 chunk 大
+小属于 small bins，并且 chunk 的大小大于等于需要分配的大小，这种情况下就直
+接将该 chunk 进行切割，分配结束，否则将根据 chunk 的空间大小将其放入 small
+bins 或是 large bins 中，遍历完成后，转入下一步。
+8)
+到了这一步，说明需要分配的是一块大的内存，或者 small bins 和 unsorted bin 中
+都找不到合适的 chunk，并且 fast bins 和 unsorted bin 中所有的 chunk 都清除干净
+了。从 large bins 中按照“smallest-first，best-fit”原则，找一个合适的 chunk，从
+中划分一块所需大小的 chunk，并将剩下的部分链接回到 bins 中。若操作成功，则
+分配结束，否则转到下一步。
+9)
+如果搜索 fast bins 和 bins 都没有找到合适的 chunk，那么就需要操作 top chunk 来
+进行分配了。判断 top chunk 大小是否满足所需 chunk 的大小，如果是，则从 top
+chunk 中分出一块来。否则转到下一步。</li></ol><ol start=10><li>到了这一步，说明 top chunk 也不能满足分配要求，所以，于是就有了两个选择: 如
+果是主分配区，调用 sbrk()，增加 top chunk 大小；如果是非主分配区，调用 mmap
+来分配一个新的 sub-heap，增加 top chunk 大小；或者使用 mmap()来直接分配。在
+这里，需要依靠 chunk 的大小来决定到底使用哪种方法。判断所需分配的 chunk
+大小是否大于等于 mmap 分配阈值，如果是的话，则转下一步，调用 mmap 分配，
+否则跳到第 12 步，增加 top chunk 的大小。</li><li>使用 mmap 系统调用为程序的内存空间映射一块 chunk_size align 4kB 大小的空间。
+然后将内存指针返回给用户。</li><li>判断是否为第一次调用 malloc，若是主分配区，则需要进行一次初始化工作，分配
+21
+一块大小为(chunk_size + 128KB) align 4KB 大小的空间作为初始的 heap。若已经初
+始化过了，主分配区则调用 sbrk()增加 heap 空间，分主分配区则在 top chunk 中切
+割出一个 chunk，使之满足分配需求，并将内存指针返回给用户。
+总结一下：根据用户请求分配的内存的大小，ptmalloc 有可能会在两个地方为用户
+分配内存空间。在第一次分配内存时，一般情况下只存在一个主分配区，但也有可能从
+父进程那里继承来了多个非主分配区，在这里主要讨论主分配区的情况，brk 值等于
+start_brk，所以实际上 heap 大小为 0，top chunk 大小也是 0。这时，如果不增加 heap
+大小，就不能满足任何分配要求。所以，若用户的请求的内存大小小于 mmap 分配阈值，
+则 ptmalloc 会初始 heap。然后在 heap 中分配空间给用户，以后的分配就基于这个 heap
+进行。若第一次用户的请求就大于 mmap 分配阈值，则 ptmalloc 直接使用 mmap()分配
+一块内存给用户，而 heap 也就没有被初始化，直到用户第一次请求小于 mmap 分配阈
+值的内存分配。第一次以后的分配就比较复杂了，简单说来，ptmalloc 首先会查找 fast bins，
+如果不能找到匹配的 chunk，则查找 small bins。若还是不行，合并 fast bins，把 chunk
+加入 unsorted bin，在 unsorted bin 中查找，若还是不行，把 unsorted bin 中的 chunk 全
+加入 large bins 中，并查找 large bins。在 fast bins 和 small bins 中的查找都需要精确匹配，
+而在 large bins 中查找时，则遵循“smallest-first，best-fit”的原则，不需要精确匹配。
+若以上方法都失败了，则 ptmalloc 会考虑使用 top chunk。若 top chunk 也不能满足分配
+要求。而且所需 chunk 大小大于 mmap 分配阈值，则使用 mmap 进行分配。否则增加
+heap，增大 top chunk。以满足分配要求。</li></ol><h2 id=4-内存回收概述>4 内存回收概述
+<a class=header-anchor href=#4-%e5%86%85%e5%ad%98%e5%9b%9e%e6%94%b6%e6%a6%82%e8%bf%b0></a></h2><p>free() 函数接受一个指向分配区域的指针作为参数，释放该指针所指向的 chunk。而具
+体的释放方法则看该 chunk 所处的位置和该 chunk 的大小。free()函数的工作步骤如下：
+1)
+free()函数同样首先需要获取分配区的锁，来保证线程安全。
+2)
+判断传入的指针是否为 0，如果为 0，则什么都不做，直接 return。否则转下一步。
+3)
+判断所需释放的 chunk 是否为 mmaped chunk，如果是，则调用 munmap()释放
+mmaped chunk，解除内存空间映射，该该空间不再有效。如果开启了 mmap 分配
+阈值的动态调整机制，并且当前回收的 chunk 大小大于 mmap 分配阈值，将 mmap
+分配阈值设置为该 chunk 的大小，将 mmap 收缩阈值设定为 mmap 分配阈值的 2
+倍，释放完成，否则跳到下一步。
+4)
+判断 chunk 的大小和所处的位置，若 chunk_size &lt;= max_fast，并且 chunk 并不位于
+heap 的顶部，也就是说并不与 top chunk 相邻，则转到下一步，否则跳到第 6 步。
+（因为与 top chunk 相邻的小 chunk 也和 top chunk 进行合并，所以这里不仅需要
+判断大小，还需要判断相邻情况）
+5)
+将 chunk 放到 fast bins 中，chunk 放入到 fast bins 中时，并不修改该 chunk 使用状
+态位 P。也不与相邻的 chunk 进行合并。只是放进去，如此而已。这一步做完之后
+释放便结束了，程序从 free()函数中返回。
+6)
+判断前一个 chunk 是否处在使用中，如果前一个块也是空闲块，则合并。并转下一
+步。
+7)
+判断当前释放 chunk 的下一个块是否为 top chunk，如果是，则转第 9 步，否则转
+下一步。
+8)
+判断下一个 chunk 是否处在使用中，如果下一个 chunk 也是空闲的，则合并，并将
+22
+合并后的 chunk 放到 unsorted bin 中。注意，这里在合并的过程中，要更新 chunk
+的大小，以反映合并后的 chunk 的大小。并转到第 10 步。
+9)
+如果执行到这一步，说明释放了一个与 top chunk 相邻的 chunk。则无论它有多大，
+都将它与 top chunk 合并，并更新 top chunk 的大小等信息。转下一步。</p><ol start=10><li>判断合并后的 chunk 的大小是否大于 FASTBIN_CONSOLIDATION_THRESHOLD（默认
+64KB），如果是的话，则会触发进行 fast bins 的合并操作，fast bins 中的 chunk 将被
+遍历，并与相邻的空闲 chunk 进行合并，合并后的 chunk 会被放到 unsorted bin 中。
+fast bins 将变为空，操作完成之后转下一步。</li><li>判断 top chunk 的大小是否大于 mmap 收缩阈值（默认为 128KB），如果是的话，对
+于主分配区，则会试图归还 top chunk 中的一部分给操作系统。但是最先分配的
+128KB 空间是不会归还的，ptmalloc 会一直管理这部分内存，用于响应用户的分配
+请求；如果为非主分配区，会进行 sub-heap 收缩，将 top chunk 的一部分返回给操
+作系统，如果 top chunk 为整个 sub-heap，会把整个 sub-heap 还回给操作系统。做
+完这一步之后，释放结束，从 free() 函数退出。可以看出，收缩堆的条件是当前
+free 的 chunk 大小加上前后能合并 chunk 的大小大于 64k，并且要 top chunk 的大
+小要达到 mmap 收缩阈值，才有可能收缩堆。</li></ol><h2 id=5-源码分析>5 源码分析
+<a class=header-anchor href=#5-%e6%ba%90%e7%a0%81%e5%88%86%e6%9e%90></a></h2><p>本部分主要对源代码实现技巧的细节做分析，希望能进一步理解 ptmalloc 的实现，做到终极无惑。主要分析的文件包括 arena.c 和 malloc.c，这两个文件包括了 ptmalloc 的核心实现，其中 arena.c 主要是对多线程支持的实现，malloc.c 定义了公用的 malloc()，free()等函数，实现了基于分配区的内存管理算法。</p><p>本部分不会从头到尾分析 arena.c 和 malloc.c 整个文件，而是根据 ptmalloc 的实现原理，分成几个模块分别介绍，主要分析了 malloc()和 free()函数的实现，对其它的函数如 realloc()，calloc()等不作介绍。由于 ptmalloc 同时支持 32 位平台和64 位平台，所以这里的分析尽量兼顾到这两类平台，但主要基于 Linux X86 平台。</p></div><footer class=post-footer><div class=addthis_inline_share_toolbox style=text-align:center></div><hr><div class=post-copyright><img src=/imgs/cc/cc.svg width=75 height=75 align=right alt=共享知识><ul><li class=post-copyright-title><strong>文章标题：</strong></li><li class=post-copyright-author><strong>原文作者：</strong>
+zero</li><li class=post-copyright-link><strong>本文链接：</strong>
+<a id=post-cr-link href=https://izeroo.cn/post/ptmalloc-internals/ title>https://izeroo.cn/post/ptmalloc-internals/</a></li><li class=post-copyright-license><strong>版权声明：</strong>
+本博客所有文章除特别声明外，均采用 <i class="fab fa-fw fa-creative-commons"></i><a target=_blank href=https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh>BY-NC-SA</a> 许可协议。转载请注明出处！</li></ul></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=/post/Hugo%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E6%96%B9%E6%A1%88/ rel=next title=Hugo的文件管理方案><i class="fa fa-chevron-left"></i> Hugo的文件管理方案</a></div><div class="post-nav-prev post-nav-item"><a href=/post/quine/ rel=prev title=Quine>Quine
+<i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><div id=comments class=post-comments><div class=comment-head><div class=comment-headline><i class="fas fa-comments fa-fw"></i>
+<span>评论交流</span></div></div><div class=comment-wrap><div><div class=comment-loading><i class="fa fa-sync fa-spin"></i></div><div class=waline-container></div></div></div></div></div></main><footer class=footer><div class=footer-inner><div class=copyright>&copy;
+<span itemprop=copyrightYear>2021 - 2023</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=author itemprop=copyrightHolder>Zero</span></div><div class=powered-by>由 <a href=https://gohugo.io title=0.111.3 target=_blank>Hugo</a> & <a href=https://github.com/hugo-next/hugo-theme-next title=4.5.3 target=_blank>Hugo NexT.Gemini</a> 强力驱动</div><div class=beian><a href=https://beian.miit.gov.cn target=_blank>鄂ICP备2021002440号-1</a>
+<img src=/imgs/gongan.png alt=鄂公网安备>
+<a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42112702000080" target=_blank>鄂公网安备 42112702000080 号</a></div></div></footer><script type=text/javascript src=https://unpkg.com/animejs@3.2.1/lib/anime.min.js defer></script>
+<script type=text/javascript src=https://unpkg.com/viewerjs@1.11.0/dist/viewer.min.js defer></script>
+<script class=next-config data-name=main type=application/json>{"bookmark":{"color":"#222","enable":false,"save":"manual"},"copybtn":true,"darkmode":true,"giscus":{"cfg":{"category":"Comments","categoryid":null,"emit":false,"inputposition":"top","mapping":"title","reactions":false,"repo":"username/repo-name","repoid":null,"theme":"preferred_color_scheme"},"js":"https://giscus.app/client.js"},"hostname":"https://izeroo.cn","i18n":{"ds_day":" 天前","ds_days":" 天 ","ds_hour":" 小时前","ds_hours":" 小时 ","ds_just":"刚刚","ds_min":" 分钟前","ds_mins":" 分钟","ds_month":" 个月前","ds_years":" 年 ","empty":"没有找到任何搜索结果：${query}","hits":"找到 ${hits} 个搜索结果","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","placeholder":"搜索..."},"lang":"zh-CN","lazyload":false,"localSearch":{"enable":true,"path":"/searchindexes.xml","preload":false,"topnperarticle":-1,"trigger":"auto","unescape":false},"motion":{"async":true,"enable":true,"transition":{"collheader":"fadeInLeft","postblock":"fadeIn","postbody":"fadeInDown","postheader":"fadeInDown","sidebar":"fadeInUp"}},"postmeta":{"comments":{"enable":true,"plugin":"waline"},"views":{"enable":true,"plugin":"busuanzi"}},"root":"/","scheme":"Gemini","sidebar":{"display":"post","offset":12,"padding":18,"position":"left","width":256},"vendor":{"plugins":"unpkg","router":"https://unpkg.com"},"version":"4.5.3","waline":{"cfg":{"emoji":false,"imguploader":false,"pageview":"#waline-pageview-count","placeholder":"请文明发言哟 ヾ(≧▽≦*)o","reaction":true,"reactiontext":["点赞","踩一下","得意","不屑","尴尬","睡觉"],"reactiontitle":"你认为这篇文章怎么样？","requiredmeta":["nick","mail"],"serverurl":"https://waline.izeroo.cn","sofa":"快来发表你的意见吧 (≧∀≦)ゞ","wordlimit":200},"css":{"alias":"waline","file":"dist/waline.css","name":"@waline/client","version":"2.13.0"},"js":{"alias":"waline","file":"dist/waline.js","name":"@waline/client","version":"2.13.0"}}}</script><script type=text/javascript src=/js/main.min.172ae7dfd181813113a42cd33e0d01ee7d239870a49495e95982cc76539f01bb.js defer></script></body></html>
